@@ -59,6 +59,17 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* 📝 Semua tulisan paragraf & deskripsi di live site justify dan rapi */
+section p,
+main p,
+article p,
+p.text-justify,
+.text-justify {
+  text-align: justify;
+  text-justify: inter-word;
+  text-align-last: left;
+}
+
 /* ✨ Animasi cursor blink */
 @keyframes blink {
   0%, 50%, 100% { opacity: 1; }

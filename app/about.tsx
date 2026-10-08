@@ -33,10 +33,10 @@ export default function About() {
           </div>
         </FadeDown>
 
-        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-20 px-4 sm:px-6 md:px-12">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-20 px-4 sm:px-6 md:px-12 items-center">
           
-          <div className="lg:col-span-5 hidden lg:flex flex-col items-center lg:items-center justify-center relative">
-            <div className="w-full max-w-[350px] lg:max-w-[450px] relative">
+          <div className="lg:col-span-5 flex flex-col items-center justify-center relative mb-4 lg:mb-0">
+            <div className="w-full max-w-[280px] sm:max-w-[340px] lg:max-w-[450px] relative">
               <Fade>
                 <div className="relative z-10 p-2 bg-background border border-text-secondary/10 rounded-3xl shadow-2xl overflow-hidden aspect-[4/5] w-full group transition-all duration-500 hover:shadow-[0_20px_40px_-5px_rgb(0,0,0,0.15)] dark:hover:shadow-[0_20px_40px_-5px_rgba(255,255,255,0.05)] hover:-translate-y-1">
                   <Image 
@@ -63,7 +63,7 @@ export default function About() {
                 <h4 className="text-xl md:text-2xl font-bold text-text-primary mb-4 flex items-center border-b border-text-secondary/20 pb-4">
                   {t("Who Am I")}
                 </h4>
-                <p className="text-base md:text-lg text-text-secondary leading-relaxed font-medium">
+                <p className="text-base md:text-lg text-text-secondary leading-relaxed font-medium text-justify">
                   {about.whoAmI || "Saya Sarjana Komputer (S.Kom.) dari program studi Sistem Informasi Institut Teknologi Kalimantan (ITK) dengan keahlian dalam Software Engineering, Backend Development, DevOps & Linux Server Management, Software QA, serta Business Intelligence."}
                 </p>
               </Fade>

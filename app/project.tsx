@@ -87,7 +87,7 @@ export default function Project() {
                     <h4 className="text-2xl font-black text-text-primary tracking-tight leading-tight group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-text-primary group-hover:to-text-secondary transition-all duration-500">{project.title}</h4>
                   </div>
 
-                  <p className="text-sm text-text-secondary font-medium leading-relaxed mb-8 flex-grow line-clamp-3">{project.shortDescription}</p>
+                  <p className="text-sm text-text-secondary font-medium leading-relaxed mb-8 flex-grow line-clamp-3 text-justify">{project.shortDescription}</p>
 
                   <div className="flex items-center justify-between mt-auto pt-4 border-t border-text-secondary/10">
                     <button className="text-xs font-bold tracking-[0.2em] uppercase text-text-primary flex items-center gap-3 group/btn cursor-pointer" onClick={() => setIsOpen(project.index)}>
@@ -149,7 +149,7 @@ export default function Project() {
                       <h4 className="text-xl sm:text-2xl font-black text-text-primary tracking-tight leading-tight">{project.title}</h4>
                     </div>
 
-                    <p className="text-xs sm:text-sm text-text-secondary font-medium leading-relaxed mb-6 flex-grow line-clamp-3">
+                    <p className="text-xs sm:text-sm text-text-secondary font-medium leading-relaxed mb-6 flex-grow line-clamp-3 text-justify">
                       {project.shortDescription}
                     </p>
 

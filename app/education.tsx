@@ -63,7 +63,7 @@ export default function Education() {
                 </h5>
 
                 {edu.description && (
-                  <p className="text-base text-text-secondary font-medium leading-relaxed mb-4">
+                  <p className="text-base text-text-secondary font-medium leading-relaxed mb-4 text-justify">
                     {edu.description}
                   </p>
                 )}

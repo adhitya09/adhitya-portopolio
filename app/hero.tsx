@@ -160,7 +160,7 @@ export default function Hero() {
             </div>
 
             <div className="max-w-xl mt-3 sm:mt-4">
-              <p className="text-text-secondary text-sm sm:text-base md:text-lg leading-relaxed font-medium">{hero.description}</p>
+              <p className="text-text-secondary text-sm sm:text-base md:text-lg leading-relaxed font-medium text-justify">{hero.description}</p>
             </div>
 
             <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mt-6 sm:mt-8">

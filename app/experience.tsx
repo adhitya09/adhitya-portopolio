@@ -53,7 +53,7 @@ export default function Experience() {
                 <h4 className="text-2xl font-bold text-text-primary tracking-tight mb-1 group-hover/item:text-text-primary transition-colors">{exp.role}</h4>
                 <h5 className="text-sm font-bold text-text-secondary tracking-wide uppercase mb-6">{exp.company}</h5>
 
-                <p className="text-base text-text-secondary font-medium leading-relaxed mb-6">{exp.description}</p>
+                <p className="text-base text-text-secondary font-medium leading-relaxed mb-6 text-justify">{exp.description}</p>
 
                 <div className="flex flex-wrap gap-2">
                   {(exp.skills || []).map((skill: string, i: number) => (

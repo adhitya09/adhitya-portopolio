@@ -253,7 +253,7 @@ export default function ATSCVPage() {
                   {edu.gpa && <span className="font-bold text-neutral-900">GPA: {edu.gpa}</span>}
                 </div>
                 {edu.description && (
-                  <p className="text-xs text-neutral-600 mt-1">{edu.description}</p>
+                  <p className="text-xs text-neutral-600 mt-1 text-justify">{edu.description}</p>
                 )}
               </div>
             ))}
@@ -281,7 +281,7 @@ export default function ATSCVPage() {
                     {org.organization}
                   </p>
                   {org.description && (
-                    <p className="text-xs text-neutral-600 mt-0.5">{org.description}</p>
+                    <p className="text-xs text-neutral-600 mt-0.5 text-justify">{org.description}</p>
                   )}
                 </div>
               ))
