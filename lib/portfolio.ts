@@ -18,6 +18,8 @@ export async function getPortfolioData(): Promise<PortfolioData> {
       if (supabaseData) {
         return supabaseData as PortfolioData
       }
+      // Auto-seed Supabase on first run if table is empty
+      await savePortfolioToSupabase(defaultPortfolio)
     } catch (e) {
       console.warn("Failed to fetch from Supabase, using fallback:", e)
     }
