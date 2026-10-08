@@ -1,56 +1,42 @@
-# RyHar Portfolio v2
+# Adhitya Hermawan, S.Kom. - Personal Portfolio
 
-A modern, interactive, and responsive personal portfolio website built to showcase projects, skills, and experience.
+A modern, interactive, and responsive portfolio web application built with Next.js 16, React 19, Tailwind CSS v4, and Framer Motion.
 
-## 🌐 Live Demo
+## 👤 About Adhitya Hermawan
+- **Role**: Software Engineer | QA Analyst | Business Intelligence
+- **Education**: S1 Sistem Informasi, Institut Teknologi Kalimantan (ITK) (GPA 3.61 / 4.00) & SMK Negeri 6 Balikpapan (RPL)
+- **Location**: Balikpapan, Kalimantan Timur, Indonesia
+- **LinkedIn**: [https://www.linkedin.com/in/adhitya-hermawan-9481b7320/](https://www.linkedin.com/in/adhitya-hermawan-9481b7320/)
+- **Email**: ntaps0989@gmail.com
+- **WhatsApp**: +62 852-4828-9959
 
-Check out the live website here: **[https://ryhar.my.id](https://ryhar.my.id)**
-
-## 🚀 Features
-
-- **Modern UI/UX**: Sleek design with premium aesthetics, carefully curated typography, and smooth micro-interactions.
-- **Interactive Animations**: Powered by Framer Motion for scroll reveals, hover effects, and fluid modal transitions.
-- **Project Showcase**: Detailed project cards with technology stack tags, features lists, and links to source code / live demos. (Includes support for private repositories).
-- **Responsive Design**: Fully optimized for mobile, tablet, and desktop viewing (includes a responsive infinite-scroll slider for mobile).
+## 🚀 Key Features
+- **Modern UI/UX**: Sleek theme with smooth light/dark mode support and aesthetic typography.
+- **Interactive Animations**: Powered by Framer Motion (page transitions, scroll reveals, glare hover effects).
+- **Project Showcase**: Showcasing SIMPRO Enterprise, Dhian R (Smart POS & Inventory), Tensai Edutor, and NeuroMotion AI.
+- **AI Portfolio Assistant**: Intelligent AI assistant to answer questions regarding Adhitya's background and achievements.
+- **Fully Responsive**: Optimized across mobile, tablet, and widescreen desktop displays.
 
 ## 🛠️ Tech Stack
-
-- **Framework**: [Next.js](https://nextjs.org/) (App Router)
-- **Language**: [TypeScript](https://www.typescriptlang.org/)
-- **Styling**: [Tailwind CSS](https://tailwindcss.com/)
-- **Animations**: [Framer Motion](https://www.framer.com/motion/)
+- **Framework**: Next.js (App Router)
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS v4
+- **Animations**: Framer Motion
+- **Icons & Assets**: Custom SVG & Optimized Images
 
 ## 💻 Getting Started
 
-First, clone the repository and install the dependencies:
-
+### 1. Install Dependencies
 ```bash
-# Clone the repository
-git clone https://github.com/RyHarJr/portofoliov2.git
-
-# Navigate to the project directory
-cd portofoliov2
-
-# Install dependencies
 npm install
-# or yarn install / pnpm install
 ```
 
-Then, run the development server:
-
+### 2. Run Development Server
 ```bash
 npm run dev
-# or yarn dev / pnpm dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-## 📁 Project Structure
-
-- `app/`: Next.js App Router pages and layouts.
-- `components/`: Reusable React components (animations, UI elements, etc.).
-- `public/`: Static assets such as images and icons.
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ## 📄 License
-
-This project is open-source and available under the [MIT License](LICENSE).
+MIT License

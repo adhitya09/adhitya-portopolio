@@ -1,0 +1,511 @@
+{
+  "hero": {
+    "greeting": "Hi, I'm",
+    "name": "Adhitya",
+    "fullName": "Adhitya Hermawan, S.Kom.",
+    "titles": [
+      "Software Engineer",
+      "QA Analyst",
+      "Business Intelligence",
+      "BPMN Engineer",
+      "Full-Stack Web Developer"
+    ],
+    "description": "Fresh graduate Sistem Informasi Institut Teknologi Kalimantan (ITK) dengan spesialisasi Software Engineering, QA Automation, DevOps, dan Business Intelligence. Berpengalaman dalam merancang dan mengembangkan sistem web end-to-end yang tangguh, efisien, dan teruji.",
+    "cvUrl": "/cv",
+    "profileImage": "/uploads/1791430653530_Monogram_A_H_Elegan_Bergaya_Kaligrafi-removebg-preview.png",
+    "quickStats": [
+      {
+        "id": 1,
+        "message": "S.Kom. Graduate ",
+        "icon": "education"
+      },
+      {
+        "id": 2,
+        "message": "Software Engineer ",
+        "icon": "code"
+      },
+      {
+        "id": 3,
+        "message": "DevOps & Cloud Ready",
+        "icon": "server"
+      }
+    ],
+    "socialLinks": [
+      {
+        "name": "LinkedIn",
+        "href": "https://www.linkedin.com/in/adhitya-hermawan-9481b7320/",
+        "icon": "linkedin"
+      },
+      {
+        "name": "GitHub",
+        "href": "https://github.com/adhitya09",
+        "icon": "github"
+      },
+      {
+        "name": "Instagram",
+        "href": "https://www.instagram.com/adhityah_09?stkn=ZzN2MGV3MmN2cGQ2",
+        "icon": "instagram"
+      },
+      {
+        "name": "Email",
+        "href": "mailto:adhityahermawan0906@gmail.com",
+        "icon": "email"
+      },
+      {
+        "name": "WhatsApp",
+        "href": "https://wa.me/6289636107188",
+        "icon": "whatsapp"
+      }
+    ]
+  },
+  "cvProfile": "Sarjana Komputer (S.Kom.) Sistem Informasi dari Institut Teknologi Kalimantan (ITK) dengan keahlian dalam Software Engineering, Backend Web Development, Linux Server Management, Docker Containerization, Software QA Automation (Maestro), serta Business Intelligence. Berpengalaman mengembangkan sistem web dan solusi enterprise yang efisien, handal, dan berorientasi pada proses bisnis terstandarisasi.",
+  "cvProfileImage": "/uploads/1791430594727_WhatsApp_Image_2026-10-04_at_00_56_51.jpeg",
+  "organizations": [
+    {
+      "id": 1,
+      "role": "Kepala Badan Usaha Milik Himpunan (BUMH)",
+      "organization": "Himpunan Mahasiswa Sistem Informasi (HMSI) ITK - Kabinet Istanava",
+      "date": "2024 – 2025",
+      "description": "Memimpin pengelolaan dan operasional kewirausahaan himpunan mahasiswa serta koordinasi program kerja strategis."
+    },
+    {
+      "id": 2,
+      "role": "Staff Ahli Divisi Acara",
+      "organization": "INSPACE ITK",
+      "date": "2024",
+      "description": "Mengkoordinasikan konsep acara, timeline, dan pelaksanaan teknis festival teknologi informasi tahunan."
+    },
+    {
+      "id": 3,
+      "role": "Kepala Divisi Perkamjin",
+      "organization": "KPU Himpunan Mahasiswa Sistem Informasi (HMSI) ITK",
+      "date": "2024",
+      "description": "Bertanggung jawab atas perlengkapan, keamanan, dan perizinan dalam pemilu raya himpunan mahasiswa."
+    },
+    {
+      "id": 4,
+      "role": "Ketua Pelaksana EXSIS",
+      "organization": "Program Studi Sistem Informasi ITK",
+      "date": "2023",
+      "description": "Memimpin kepanitiaan penyambutan dan pengenalan program studi sistem informasi bagi mahasiswa baru."
+    },
+    {
+      "id": 5,
+      "role": "Panitia Divisi Acara",
+      "organization": "ITK Open House",
+      "date": "2023",
+      "description": "Menyusun rangkaian kegiatan pengenalan kampus dan koordinasi pemateri untuk peserta eksternal."
+    }
+  ],
+  "about": {
+    "sectionTag": "Discover",
+    "title": "About Me",
+    "profileImage": "/uploads/1791432340532_WhatsApp_Image_2026-10-04_at_00_56_51.jpeg",
+    "backdropWord": "ENG.",
+    "whoAmI": "Saya Sarjana Komputer (S.Kom.) dari program studi Sistem Informasi Institut Teknologi Kalimantan (ITK) dengan keahlian dalam Software Engineering, Backend Development, DevOps & Linux Server Management, Software QA (Maestro automation & regression testing), serta Business Intelligence. Berdedikasi membangun arsitektur sistem yang skalabel, aman, dan mudah dimaintain dari perancangan database hingga deployment produksi.",
+    "personalDetails": {
+      "name": "Adhitya Hermawan, S.Kom.",
+      "location": "Balikpapan, Kalimantan Timur",
+      "phone": "+62 896-3619-7188",
+      "phoneUrl": "https://wa.me/6285248289959",
+      "gpa": "3.61 / 4.00",
+      "email": "adhityahermawan0906@gmail.com",
+      "education": "Institut Teknologi Kalimantan (ITK)"
+    },
+    "scrollTexts": [
+      "Adhitya Hermawan, S.Kom.",
+      "Software Engineer | QA Analyst | Business Intelligence"
+    ]
+  },
+  "experience": {
+    "sectionTag": "Career Path",
+    "title": "Work Experience",
+    "items": [
+      {
+        "id": 1,
+        "company": "PT Javan Cipta Solusi",
+        "role": "Junior Software Engineer (Intern)",
+        "date": "Jul 2026 - October 2026",
+        "description": "Berkontribusi dalam pengembangan dan deployment enterprise SaaS menggunakan framework AlurKerja. Mengelola server Linux, VPS provisioning, Docker, Docker Compose, SSL, reverse proxies, Micro Frontends (MFE), Keycloak, Camunda, dan BPMN process modeling. Melakukan pengujian Software QA: eksekusi test case, regression testing, retesting, dan otomatisasi UI menggunakan Maestro.",
+        "skills": [
+          "Docker",
+          "Linux VPS",
+          "Keycloak",
+          "Camunda",
+          "Maestro QA",
+          "Micro Frontends",
+          "DevOps"
+        ]
+      },
+      {
+        "id": 2,
+        "company": "PT Pertamina Patra Niaga",
+        "role": "Software & System Development (Intern)",
+        "date": "Januari 2025 - Februari 2025",
+        "description": "Berkontribusi dalam pengembangan SIMPRO (Sistem Informasi Manajemen Proyek) untuk sentralisasi dan pelacakan proyek operasional secara real-time. Terlibat dalam analisis kebutuhan pengguna, perancangan database relasional, arsitektur sistem, pengembangan web application berbasis Laravel, pengujian QA, dan penyusunan dokumentasi teknis sistem.",
+        "skills": [
+          "Laravel",
+          "MySQL",
+          "System Architecture",
+          "QA Testing",
+          "Technical Documentation"
+        ]
+      },
+      {
+        "id": 3,
+        "company": "Telkom",
+        "role": "Web Developer (Intern)",
+        "date": "2020",
+        "description": "melaksanan PKL secara daring dengan pihak telkom dengan project pelatihan pembuatan website berbasis laravel ",
+        "skills": [
+          "Laravel"
+        ]
+      }
+    ]
+  },
+  "education": {
+    "sectionTag": "Academic Background",
+    "title": "Education & Leadership",
+    "items": [
+      {
+        "id": 1,
+        "institution": "Institut Teknologi Kalimantan (ITK)",
+        "degree": "Sarjana Komputer (S.Kom.) - Sistem Informasi",
+        "date": "2022 - 2026",
+        "gpa": "3.61 / 4.00",
+        "location": "Balikpapan, Kalimantan Timur",
+        "description": "Lulus dengan (IPK 3.61). Fokus studi pada Sistem Informasi",
+        "activities": [
+          "Panitia Divisi Acara ITK Open House (2023)",
+          "Ketua Pelaksana EXSIS (2023)",
+          "Staf Divisi Kesehatan Information System Care (ISC) ITK (2023)",
+          "Staff Divisi Acara INSPACE (2023)",
+          "Staff Divisi Perkamjin KPU HMSI (2023)",
+          "Kepala Divisi Perkamjin KPU HMSI (2024)",
+          "Staff Ahli Divisi Acara INSPACE (2024)",
+          "Staff Badan Usaha Milik Himpunan (BUMH) Kabinet Synergia (2024)",
+          "Kepala Badan Usaha Milik Himpunan (BUMH) Kabinet Istanava (2024–2025)",
+          "Peserta Presentator SEPAKAT (2026)"
+        ]
+      },
+      {
+        "id": 2,
+        "institution": "SMK Negeri 6 Balikpapan",
+        "degree": "Rekayasa Perangkat Lunak (RPL)",
+        "date": "2019 - 2022",
+        "location": "Balikpapan, Kalimantan Timur",
+        "description": "Pendidikan kejuruan fokus rekayasa perangkat lunak. Membangun fondasi kuat dalam logika algoritma, database relational, pemrograman berorientasi objek (OOP), dan web development.",
+        "activities": [
+          "Pengembangan Proyek Perangkat Lunak Siswa",
+          "Praktik Kerja Industri Rekayasa Perangkat Lunak",
+          "Ketua Cabang Olahraga Petanque"
+        ]
+      }
+    ]
+  },
+  "techStack": {
+    "sectionTag": "Skills & Tools",
+    "title": "My Tech Stack",
+    "categories": [
+      {
+        "title": "Backend & Frameworks",
+        "description": "Robust server-side architecture, enterprise SaaS, and RESTful APIs.",
+        "technologies": [
+          {
+            "name": "Laravel",
+            "svg": "https://cdn.simpleicons.org/laravel"
+          },
+          {
+            "name": "Filament",
+            "svg": "https://cdn.simpleicons.org/filament"
+          },
+          {
+            "name": "Node.js",
+            "svg": "https://cdn.simpleicons.org/nodedotjs"
+          },
+          {
+            "name": "Express.js",
+            "svg": "https://cdn.simpleicons.org/express"
+          },
+          {
+            "name": "PHP",
+            "svg": "https://cdn.simpleicons.org/php"
+          },
+          {
+            "name": "TypeScript",
+            "svg": "https://cdn.simpleicons.org/typescript"
+          }
+        ]
+      },
+      {
+        "title": "Frontend & UI",
+        "description": "Modern frameworks for reactive and intuitive user interfaces.",
+        "technologies": [
+          {
+            "name": "React.js",
+            "svg": "https://cdn.simpleicons.org/react"
+          },
+          {
+            "name": "Next.js",
+            "svg": "https://cdn.simpleicons.org/nextdotjs"
+          },
+          {
+            "name": "Tailwind CSS",
+            "svg": "https://cdn.simpleicons.org/tailwindcss"
+          },
+          {
+            "name": "HTML5",
+            "svg": "https://cdn.simpleicons.org/html5"
+          },
+          {
+            "name": "CSS3",
+            "svg": "https://cdn.simpleicons.org/css3"
+          },
+          {
+            "name": "Framer Motion",
+            "svg": "https://cdn.simpleicons.org/framer"
+          }
+        ]
+      },
+      {
+        "title": "Databases & Business Intelligence",
+        "description": "Relational database modeling, query optimization, and BI reporting.",
+        "technologies": [
+          {
+            "name": "MySQL",
+            "svg": "https://cdn.simpleicons.org/mysql"
+          },
+          {
+            "name": "PostgreSQL",
+            "svg": "https://cdn.simpleicons.org/postgresql"
+          },
+          {
+            "name": "Power BI",
+            "svg": "https://cdn.simpleicons.org/powerbi"
+          },
+          {
+            "name": "Prisma ORM",
+            "svg": "https://cdn.simpleicons.org/prisma"
+          }
+        ]
+      },
+      {
+        "title": "DevOps, QA & Infrastructure",
+        "description": "Containerization, automated testing, server administration, and CI/CD.",
+        "technologies": [
+          {
+            "name": "Docker",
+            "svg": "https://cdn.simpleicons.org/docker"
+          },
+          {
+            "name": "Linux Server",
+            "svg": "https://cdn.simpleicons.org/linux"
+          },
+          {
+            "name": "Maestro (QA)",
+            "svg": "https://cdn.simpleicons.org/testinglibrary"
+          },
+          {
+            "name": "Nginx",
+            "svg": "https://cdn.simpleicons.org/nginx"
+          },
+          {
+            "name": "Git",
+            "svg": "https://cdn.simpleicons.org/git"
+          },
+          {
+            "name": "Postman",
+            "svg": "https://cdn.simpleicons.org/postman"
+          }
+        ]
+      }
+    ]
+  },
+  "projects": {
+    "sectionTag": "Portfolio",
+    "title": "Selected Works",
+    "items": [
+      {
+        "id": 1791398377487,
+        "imagePath": "/uploads/1791400035312_warung_poster.jpg",
+        "title": "Warung Mba Neng - Platform E-Commerce ",
+        "shortDescription": "Platform pemesanan kue tradisional secara digital dengan tersedia katalog produk dan keranjang pemesanan serta direct langsung dengan pesan otomatis ke whatsapp penjual.",
+        "createdAt": "2026",
+        "features": [
+          "Live Product Search & Filter",
+          "Dynamic Menu Catalog",
+          "Interactive Cart System",
+          "Whatsapp Direct Checkout"
+        ],
+        "tech": [
+          "React",
+          "Node.js",
+          "Tailwind CSS"
+        ],
+        "githubUrl": "https://github.com/adhitya09/warung-mbaneng.git",
+        "liveDemoUrl": "https://warung-mbaneng.netlify.app/",
+        "isPrivateRepo": false
+      },
+      {
+        "id": 1,
+        "imagePath": "/uploads/1791400041950_simpro_poster.jpg",
+        "title": "SIMPRO Enterprise",
+        "shortDescription": "Sistem Informasi Manajemen Proyek terintegrasi untuk PT Pertamina Patra Niaga guna tracking progress milestone, efisiensi alokasi anggaran, dan pelaporan proyek terpusat.",
+        "createdAt": "2025",
+        "features": [
+          "Real-time Milestone Tracking",
+          "Gantt Chart & Progress Analytics",
+          "Role-based Access & Approval Flow",
+          "Interactive Budget & Resource Monitoring"
+        ],
+        "tech": [
+          "Laravel",
+          "PHP",
+          "MySQL",
+          "Tailwind CSS",
+          "REST API",
+          "Docker"
+        ],
+        "githubUrl": "https://github.com/adhitya09/simpro.git",
+        "liveDemoUrl": "",
+        "isPrivateRepo": false
+      },
+      {
+        "id": 2,
+        "imagePath": "/uploads/1791400052854_pos_poster.jpg",
+        "title": "Dhian R - Smart POS & Inventory",
+        "shortDescription": "Solusi Point of Sale (POS) dan manajemen inventaris berbasis web menggunakan Laravel & Filament untuk transaksi kasir cepat, stok otomatis, dan analitik penjualan komprehensif.",
+        "createdAt": "2026",
+        "features": [
+          "Real-time Stock & Low Level Alerts",
+          "Fast POS Checkout & Barcode Scanning",
+          "Comprehensive Financial & Sales Reporting",
+          "Multi-user Roles & Supplier Management"
+        ],
+        "tech": [
+          "Laravel",
+          "Filament",
+          "PHP",
+          "MySQL",
+          "Tailwind CSS"
+        ],
+        "githubUrl": "https://github.com/adhitya09/pos-filament.git",
+        "liveDemoUrl": "",
+        "isPrivateRepo": false
+      },
+      {
+        "id": 3,
+        "imagePath": "/uploads/1791400060774_tensai_poster.jpg",
+        "title": "Tensai Edutor Platform",
+        "shortDescription": "Platform pendaftaran kursus dan tata kelola bimbingan belajar dengan landing page interaktif serta portal multi-role (Siswa, Pengajar, Administrator, dan Owner).",
+        "createdAt": "2025",
+        "features": [
+          "Automated Student Registration",
+          "Interactive Class & Tutor Scheduling",
+          "Role-based Management Dashboards",
+          "Integrated Payment & Enrollment Records"
+        ],
+        "tech": [
+          "Laravel",
+          "PHP",
+          "MySQL",
+          "JavaScript",
+          "Tailwind CSS"
+        ],
+        "githubUrl": "https://github.com/adhitya09/Tensai-Edutor.git",
+        "liveDemoUrl": "",
+        "isPrivateRepo": false
+      },
+      {
+        "id": 4,
+        "imagePath": "/uploads/1791400064827_neuromotion_poster.jpg",
+        "title": "NeuroMotion AI By. Last Dance",
+        "shortDescription": "Sistem kesehatan cerdas berbasis Computer Vision dan Deep Learning untuk skrining dini dan pemantauan gangguan neurologis gerakan (Parkinson's & analisa gait) menggunakan YOLO.",
+        "createdAt": "2026",
+        "features": [
+          "Real-time Skeleton & Pose Tracking",
+          "Biometric Gait Analysis & Diagnostics",
+          "Neural Network Confidence Scoring",
+          "Interactive Medical Assessment Dashboard"
+        ],
+        "tech": [
+          "Python",
+          "OpenCV",
+          "YOLO",
+          "Computer Vision",
+          "Deep Learning"
+        ],
+        "githubUrl": "https://github.com/akhzaozy/neuronmotion.git",
+        "liveDemoUrl": "https://neuro.akhzafachrozy.my.id/",
+        "isPrivateRepo": false
+      }
+    ]
+  },
+  "contact": {
+    "sectionTag": "Get In Touch",
+    "title": "Contact Me",
+    "map": {
+      "title": "📍 Balikpapan Utara",
+      "subtitle": "Kalimantan Timur, Indonesia",
+      "embedUrl": "https://maps.google.com/maps?q=-1.2379,116.8529&t=&z=13&ie=UTF8&iwloc=&output=embed"
+    },
+    "socialCards": [
+      {
+        "platform": "LinkedIn",
+        "username": "Adhitya Hermawan, S.Kom.",
+        "url": "https://www.linkedin.com/in/adhitya-hermawan-9481b7320/",
+        "icon": "linkedin"
+      },
+      {
+        "platform": "GitHub",
+        "username": "adhitya09",
+        "url": "https://github.com/adhitya09",
+        "icon": "github"
+      },
+      {
+        "platform": "Instagram",
+        "username": "@adhityah_09",
+        "url": "https://www.instagram.com/adhityah_09?stkn=ZzN2MGV3MmN2cGQ2",
+        "icon": "instagram"
+      },
+      {
+        "platform": "Email",
+        "username": "ntaps0989@gmail.com",
+        "url": "mailto:adhityahermawan0906@gmail.com",
+        "icon": "email"
+      },
+      {
+        "platform": "WhatsApp",
+        "username": "+62 852-4828-9959",
+        "url": "https://wa.me/6289636107188",
+        "icon": "whatsapp"
+      }
+    ]
+  },
+  "footer": {
+    "copyrightName": "Adhitya Hermawan, S.Kom.",
+    "subtitle": "Developer",
+    "links": [
+      {
+        "name": "LinkedIn",
+        "href": "https://www.linkedin.com/in/adhitya-hermawan-9481b7320/"
+      },
+      {
+        "name": "GitHub",
+        "href": "https://github.com/adhitya09"
+      },
+      {
+        "name": "Instagram",
+        "href": "https://www.instagram.com/adhityah_09?stkn=ZzN2MGV3MmN2cGQ2"
+      },
+      {
+        "name": "Email",
+        "href": "mailto:adhityahermawan0906@gmail.com"
+      },
+      {
+        "name": "WhatsApp",
+        "href": "https://wa.me/6289636107188"
+      }
+    ]
+  }
+}

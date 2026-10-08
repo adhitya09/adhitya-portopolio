@@ -8,9 +8,9 @@ export default function FadeUp({ children, delay = 0, duration = 0.8 }: { childr
   return (
     <motion.div 
       ref={ref} 
-      initial={{ opacity: 0, y: 40, scale: 0.95, filter: "blur(10px)" }} 
-      animate={inView ? { opacity: 1, y: 0, scale: 1, filter: "blur(0px)" } : {}} 
-      transition={{ duration, delay, type: "spring", stiffness: 100, damping: 20, mass: 1 }}
+      initial={{ opacity: 0, y: 24 }} 
+      animate={inView ? { opacity: 1, y: 0 } : {}} 
+      transition={{ duration: Math.min(duration, 0.6), delay, ease: [0.25, 0.1, 0.25, 1] }}
     >
       {children}
     </motion.div>

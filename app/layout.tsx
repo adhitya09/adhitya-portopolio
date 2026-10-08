@@ -2,6 +2,9 @@ import type { Metadata } from "next"
 import { Poppins } from "next/font/google"
 import "../styles/globals.css"
 import PageLoader from "@/components/PageLoader"
+import { PortfolioProvider } from "@/components/PortfolioContext"
+import { LanguageProvider } from "@/components/LanguageContext"
+import { getPortfolioData } from "@/lib/portfolio"
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -10,63 +13,68 @@ const poppins = Poppins({
 })
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL || "https://ryhar.my.id"),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL || "https://adhitya-hermawan.vercel.app"),
   title: {
-    default: "RyHar | Portfolio",
-    template: "%s | RyHar Portfolio",
+    default: "AH | PORTOPOLIO",
+    template: "%s | AH | PORTOPOLIO",
   },
-  description: "Personal portfolio of RyHar. Software Developer specializing in Next.js, Node.js, and modern web development.",
-  keywords: ["RyHar", "Portfolio", "Software Developer", "Web Development", "Backend", "Frontend", "Next.js", "React", "Node.js"],
-  authors: [{ name: "RyHar" }],
-  creator: "RyHar",
+  description: "Personal portfolio of Adhitya Hermawan, S.Kom. Software Engineer, QA Analyst, and Business Intelligence specialist from Institut Teknologi Kalimantan.",
+  keywords: ["Adhitya Hermawan", "Portfolio", "Software Engineer", "Backend Developer", "QA Analyst", "Business Intelligence", "Laravel", "Docker", "DevOps", "ITK", "Institut Teknologi Kalimantan"],
+  authors: [{ name: "Adhitya Hermawan" }],
+  creator: "Adhitya Hermawan",
   openGraph: {
     type: "website",
     locale: "id_ID",
     url: "/",
-    title: "RyHar | Portfolio",
-    description: "Personal portfolio of RyHar. Software Developer specializing in Next.js, Node.js, and modern web development.",
-    siteName: "RyHar Portfolio",
+    title: "AH | PORTOPOLIO",
+    description: "Personal portfolio of Adhitya Hermawan, S.Kom. Software Engineer, QA Analyst, and Business Intelligence specialist from Institut Teknologi Kalimantan.",
+    siteName: "AH PORTOPOLIO",
     images: [
       {
-        url: "/images/hero.jpg",
-        width: 1200,
-        height: 630,
-        alt: "RyHar Portfolio",
+        url: "/logo.png",
+        width: 500,
+        height: 500,
+        alt: "AH PORTOPOLIO Logo",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "RyHar | Portfolio",
-    description: "Personal portfolio of RyHar. Software Developer specializing in Next.js, Node.js, and modern web development.",
-    images: ["/images/hero.jpg"],
-    creator: "@RyHar",
+    title: "AH | PORTOPOLIO",
+    description: "Personal portfolio of Adhitya Hermawan, S.Kom. Software Engineer, QA Analyst, and Business Intelligence specialist from Institut Teknologi Kalimantan.",
+    images: ["/logo.png"],
+    creator: "@adhitya_hermawan",
   },
   icons: {
-    icon: "/images/hero.jpg",
-    shortcut: "/images/hero.jpg",
-    apple: "/images/hero.jpg",
+    icon: [
+      { url: "/logo.png", type: "image/png" },
+      { url: "/icon.png", type: "image/png" },
+    ],
+    shortcut: "/logo.png",
+    apple: "/logo.png",
   },
   alternates: {
     canonical: "/",
   },
-  verification: {
-    google: "ZbLhiilDbtLDyIx5eH6Jeoe1jPkXNKId-LhXG1HhLWA",
-  },
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
 }>) {
+  const initialData = await getPortfolioData()
+
   return (
     <html lang="en">
       <body className={`${poppins.className} antialiased`}>
-        <PageLoader />
-        {children}
+        <LanguageProvider>
+          <PortfolioProvider initialData={initialData}>
+            <PageLoader />
+            {children}
+          </PortfolioProvider>
+        </LanguageProvider>
       </body>
     </html>
   )
 }
-

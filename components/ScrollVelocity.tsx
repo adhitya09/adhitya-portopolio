@@ -1,5 +1,5 @@
 "use client"
-import React, { useRef, useLayoutEffect, useState } from "react"
+import React, { useRef, useLayoutEffect, useState, useEffect } from "react"
 import { motion, useScroll, useSpring, useTransform, useMotionValue, useVelocity, useAnimationFrame } from "motion/react"
 
 interface VelocityMapping {
@@ -67,7 +67,22 @@ export const ScrollVelocity: React.FC<ScrollVelocityProps> = ({ scrollContainerR
     const velocityFactor = useTransform(smoothVelocity, velocityMapping?.input || [0, 1000], velocityMapping?.output || [0, 5], { clamp: false })
 
     const copyRef = useRef<HTMLSpanElement>(null)
+    const containerRef = useRef<HTMLDivElement>(null)
+    const isVisibleRef = useRef(false)
     const copyWidth = useElementWidth(copyRef)
+
+    useEffect(() => {
+      const el = containerRef.current
+      if (!el) return
+      const observer = new IntersectionObserver(
+        ([entry]) => {
+          isVisibleRef.current = entry.isIntersecting
+        },
+        { rootMargin: "150px" }
+      )
+      observer.observe(el)
+      return () => observer.disconnect()
+    }, [])
 
     function wrap(min: number, max: number, v: number): number {
       const range = max - min
@@ -82,6 +97,7 @@ export const ScrollVelocity: React.FC<ScrollVelocityProps> = ({ scrollContainerR
 
     const directionFactor = useRef<number>(1)
     useAnimationFrame((t, delta) => {
+      if (!isVisibleRef.current) return
       let moveBy = directionFactor.current * baseVelocity * (delta / 1000)
 
       if (velocityFactor.get() < 0) {
@@ -104,7 +120,7 @@ export const ScrollVelocity: React.FC<ScrollVelocityProps> = ({ scrollContainerR
     }
 
     return (
-      <div className={`${parallaxClassName} relative overflow-hidden`} style={parallaxStyle}>
+      <div ref={containerRef} className={`${parallaxClassName} relative overflow-hidden`} style={parallaxStyle}>
         <motion.div className={`${scrollerClassName} flex whitespace-nowrap text-center font-sans text-4xl font-bold tracking-[-0.02em] drop-shadow md:text-[5rem] md:leading-20`} style={{ x, ...scrollerStyle }}>
           {spans}
         </motion.div>

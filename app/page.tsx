@@ -3,6 +3,7 @@ import Footer from "@/components/Footer"
 import Hero from "./hero"
 import About from "./about"
 import Experience from "./experience"
+import Education from "./education"
 import TechStack from "./tech-stack"
 import Project from "./project"
 import Contact from "./contact"
@@ -16,6 +17,7 @@ export default function Home() {
       <Hero />
       <About />
       <Experience />
+      <Education />
       <TechStack />
       <Project />
       <Contact />
