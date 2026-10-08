@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server"
-export const runtime = 'edge'
 import OpenAI from 'openai'
 
 interface HistoryEntry {
