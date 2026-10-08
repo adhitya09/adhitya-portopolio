@@ -175,3 +175,53 @@ html {
 .animate-infinite-scroll:hover {
   animation-play-state: paused;
 }
+
+/* 🚀 Ultra-Smooth 60fps Hardware-Accelerated Page Loader Keyframes */
+@keyframes loader-fade-in {
+  from {
+    opacity: 0;
+    transform: scale3d(0.92, 0.92, 1);
+  }
+  to {
+    opacity: 1;
+    transform: scale3d(1, 1, 1);
+  }
+}
+
+@keyframes loader-slide-up {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 8px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes loader-progress {
+  0% {
+    transform: translate3d(-100%, 0, 0);
+  }
+  60% {
+    transform: translate3d(-25%, 0, 0);
+  }
+  100% {
+    transform: translate3d(0%, 0, 0);
+  }
+}
+
+.animate-fade-in {
+  animation: loader-fade-in 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  will-change: transform, opacity;
+}
+
+.animate-slide-up {
+  animation: loader-slide-up 0.4s cubic-bezier(0.16, 1, 0.3, 1) 0.1s both;
+  will-change: transform, opacity;
+}
+
+.animate-loader-progress {
+  animation: loader-progress 0.65s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  will-change: transform;
+}
