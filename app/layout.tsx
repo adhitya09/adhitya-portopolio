@@ -13,7 +13,7 @@ const poppins = Poppins({
 })
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL || "https://adhitya-hermawan.vercel.app"),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL || "https://adhityah.vercel.app"),
   title: {
     default: "AH | PORTOPOLIO",
     template: "%s | AH | PORTOPOLIO",
