@@ -23,6 +23,11 @@ export default function About() {
       clean.endsWith(".ogg") ||
       clean.endsWith(".mov") ||
       clean.endsWith(".m4v") ||
+      clean.endsWith(".mkv") ||
+      clean.endsWith(".avi") ||
+      clean.includes(".mp4") ||
+      clean.includes(".webm") ||
+      clean.includes(".mov") ||
       url.startsWith("data:video/")
     )
   }
@@ -60,6 +65,11 @@ export default function About() {
                       loop
                       muted
                       playsInline
+                      preload="auto"
+                      onLoadedData={(e) => {
+                        e.currentTarget.muted = true
+                        e.currentTarget.play().catch(() => {})
+                      }}
                       className="w-full h-full object-cover rounded-2xl transition-all duration-700 scale-100 group-hover:scale-105"
                     />
                   ) : (
