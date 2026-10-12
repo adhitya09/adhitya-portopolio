@@ -200,14 +200,25 @@ export default function Hero() {
 
             <div className="relative z-10 p-2 bg-background border border-text-secondary/10 rounded-full shadow-2xl w-60 h-60 sm:w-72 sm:h-72 md:w-80 md:h-80 lg:w-96 lg:h-96 flex items-center justify-center">
               <div className="relative w-full h-full rounded-full overflow-hidden">
-                <Image 
-                  src={hero.profileImage || "/images/hero.jpg"} 
-                  alt={hero.fullName || hero.name} 
-                  fill
-                  priority 
-                  sizes="(max-width: 640px) 240px, (max-width: 768px) 288px, (max-width: 1024px) 320px, 384px"
-                  className="rounded-full object-cover aspect-square floating transition-all duration-700" 
-                />
+                {hero.profileImage && (hero.profileImage.match(/\.(mp4|webm|ogg|mov)(\?.*)?$/i) || hero.profileImage.startsWith("data:video/")) ? (
+                  <video
+                    src={hero.profileImage}
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                    className="w-full h-full object-cover rounded-full aspect-square floating transition-all duration-700"
+                  />
+                ) : (
+                  <Image 
+                    src={hero.profileImage || "/images/hero.jpg"} 
+                    alt={hero.fullName || hero.name} 
+                    fill
+                    priority 
+                    sizes="(max-width: 640px) 240px, (max-width: 768px) 288px, (max-width: 1024px) 320px, 384px"
+                    className="rounded-full object-cover aspect-square floating transition-all duration-700" 
+                  />
+                )}
               </div>
             </div>
 

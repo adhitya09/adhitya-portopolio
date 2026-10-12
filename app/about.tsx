@@ -14,6 +14,19 @@ export default function About() {
   const details = about.personalDetails || {}
   const velocity = 50
 
+  const isVideoUrl = (url?: string) => {
+    if (!url || typeof url !== "string") return false
+    const clean = url.split("?")[0].toLowerCase()
+    return (
+      clean.endsWith(".mp4") ||
+      clean.endsWith(".webm") ||
+      clean.endsWith(".ogg") ||
+      clean.endsWith(".mov") ||
+      clean.endsWith(".m4v") ||
+      url.startsWith("data:video/")
+    )
+  }
+
   const profileImg = about.profileImage || data.hero?.profileImage || "/images/hero.jpg"
   const rawScrollTexts = about.scrollTexts && about.scrollTexts.length > 0 
     ? about.scrollTexts 
@@ -40,15 +53,26 @@ export default function About() {
             <div className="w-full max-w-[280px] sm:max-w-[340px] lg:max-w-[450px] relative">
               <Fade>
                 <div className="relative z-10 p-2 bg-background border border-text-secondary/10 rounded-3xl shadow-2xl overflow-hidden aspect-[4/5] w-full group transition-all duration-500 hover:shadow-[0_20px_40px_-5px_rgb(0,0,0,0.15)] dark:hover:shadow-[0_20px_40px_-5px_rgba(255,255,255,0.05)] hover:-translate-y-1">
-                  <Image 
-                    src={profileImg} 
-                    alt={details.name || "Adhitya Hermawan"} 
-                    fill 
-                    loading="lazy"
-                    className="object-cover transition-all duration-700 scale-100 group-hover:scale-105" 
-                    sizes="(max-width: 1024px) 100vw, 450px"
-                  />
-                  <div className="absolute inset-0 bg-linear-to-t from-background/80 to-transparent opacity-60 group-hover:opacity-20 transition-opacity duration-500 rounded-3xl"></div>
+                  {isVideoUrl(profileImg) ? (
+                    <video
+                      src={profileImg}
+                      autoPlay
+                      loop
+                      muted
+                      playsInline
+                      className="w-full h-full object-cover rounded-2xl transition-all duration-700 scale-100 group-hover:scale-105"
+                    />
+                  ) : (
+                    <Image 
+                      src={profileImg} 
+                      alt={details.name || "Adhitya Hermawan"} 
+                      fill 
+                      loading="lazy"
+                      className="object-cover transition-all duration-700 scale-100 group-hover:scale-105" 
+                      sizes="(max-width: 1024px) 100vw, 450px"
+                    />
+                  )}
+                  <div className="absolute inset-0 bg-linear-to-t from-background/80 to-transparent opacity-60 group-hover:opacity-20 transition-opacity duration-500 rounded-3xl pointer-events-none"></div>
                 </div>
                 <div className="absolute -bottom-8 -left-8 text-8xl lg:text-9xl font-black text-text-secondary/5 select-none pointer-events-none tracking-tighter mix-blend-multiply dark:mix-blend-screen z-0">
                   {about.backdropWord || "ENG."}

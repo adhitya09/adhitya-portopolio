@@ -299,9 +299,30 @@ export default function CMSPanel() {
     }
   }
 
+  // Helper to detect video media URLs
+  const isVideoUrl = (url?: string) => {
+    if (!url || typeof url !== "string") return false
+    const clean = url.split("?")[0].toLowerCase()
+    return (
+      clean.endsWith(".mp4") ||
+      clean.endsWith(".webm") ||
+      clean.endsWith(".ogg") ||
+      clean.endsWith(".mov") ||
+      clean.endsWith(".m4v") ||
+      url.startsWith("data:video/")
+    )
+  }
+
   // Client-side image compressor: Resizes large camera/phone photos (e.g. DSC photos) to max 1600px WebP, reducing 15MB down to ~250KB before upload
   const compressImage = async (file: File): Promise<File> => {
-    if (file.type === "image/svg+xml") return file
+    // If it's a video or SVG, do NOT compress with canvas, upload directly
+    if (
+      file.type.startsWith("video/") ||
+      file.type === "image/svg+xml" ||
+      file.name.match(/\.(mp4|webm|mov|m4v|ogg)$/i)
+    ) {
+      return file
+    }
     return new Promise((resolve) => {
       const reader = new FileReader()
       reader.onload = (event) => {
@@ -350,7 +371,7 @@ export default function CMSPanel() {
     })
   }
 
-  // Upload Photo / Screenshot handler
+  // Upload Photo / Video / Screenshot handler
   const handlePhotoUpload = async (
     e: React.ChangeEvent<HTMLInputElement>,
     targetField: "profile" | "about" | "cvProfile" | "project",
@@ -363,7 +384,46 @@ export default function CMSPanel() {
     setUploadingTarget(uploadKey)
 
     try {
-      // Compress in browser before sending to bypass Vercel 4.5MB payload limit
+      const isVideo = file.type.startsWith("video/") || Boolean(file.name.match(/\.(mp4|webm|mov|m4v|ogg)$/i))
+
+      // If it's a video larger than 4MB, upload directly to Supabase Storage client-side to bypass Vercel 4.5MB payload limit
+      if (isVideo && file.size > 4 * 1024 * 1024) {
+        const { createClient } = await import("@supabase/supabase-js")
+        const sbUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || ""
+        const sbAnon = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ""
+        if (sbUrl && sbAnon) {
+          const supabase = createClient(sbUrl, sbAnon)
+          const ext = file.name.split(".").pop() || "mp4"
+          const cleanBase = file.name.replace(/\.[^/.]+$/, "").replace(/[^a-zA-Z0-9_-]/g, "_")
+          const filename = `uploads/${Date.now()}_${cleanBase}.${ext}`
+          const { error: sbErr } = await supabase.storage.from("portfolio-assets").upload(filename, file, {
+            contentType: file.type || "video/mp4",
+            upsert: true,
+          })
+          if (!sbErr) {
+            const { data: pubData } = supabase.storage.from("portfolio-assets").getPublicUrl(filename)
+            const videoUrl = pubData?.publicUrl
+            if (videoUrl) {
+              if (targetField === "about") {
+                setData((prev) => ({
+                  ...prev,
+                  about: { ...prev.about, profileImage: videoUrl },
+                }))
+                showToast("Video looping About Me berhasil diunggah!")
+              } else if (targetField === "profile") {
+                setData((prev) => ({
+                  ...prev,
+                  hero: { ...prev.hero, profileImage: videoUrl },
+                }))
+                showToast("Video looping Home / Hero berhasil diunggah!")
+              }
+              return
+            }
+          }
+        }
+      }
+
+      // Compress in browser if image to bypass Vercel 4.5MB payload limit
       const optimizedFile = await compressImage(file)
 
       const formData = new FormData()
@@ -948,7 +1008,7 @@ export default function CMSPanel() {
                 </div>
               </div>
 
-              {/* FOTO PROFIL BAGIAN ABOUT ME (TENTANG SAYA) */}
+              {/* FOTO / VIDEO PROFIL BAGIAN ABOUT ME (TENTANG SAYA) */}
               <div className="bg-thirdary/20 p-6 rounded-2xl border border-text-secondary/15 flex flex-col gap-6">
                 <div className="flex flex-wrap items-center justify-between gap-3 border-b border-text-secondary/10 pb-4">
                   <div>
@@ -957,14 +1017,14 @@ export default function CMSPanel() {
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                       </svg>
                       <h3 className="text-base font-black text-text-primary">
-                        Foto Profil Bagian About Me (Tentang Saya)
+                        Foto / Video Profil Bagian About Me (Tentang Saya)
                       </h3>
                       <span className="bg-text-primary/10 text-text-primary text-[10px] font-extrabold px-2 py-0.5 rounded-full uppercase tracking-wider">
-                        Mandiri / Tidak Mengikuti Home
+                        Foto / Video Looping
                       </span>
                     </div>
                     <p className="text-xs text-text-secondary mt-1">
-                      Foto ini khusus tampil pada kartu profil bagian About Me di Live Site (format portrait 4:5). Mengganti foto di sini tidak akan merubah foto Home / Hero.
+                      Media ini khusus tampil pada kartu profil bagian About Me di Live Site (format portrait 4:5). Anda dapat mengunggah foto atau video looping (MP4/WebM) yang akan berputar berulang tanpa henti.
                     </p>
                   </div>
                 </div>
@@ -972,35 +1032,48 @@ export default function CMSPanel() {
                 <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
                   <div className="md:col-span-4 flex flex-col items-center">
                     <div className="relative w-36 h-44 rounded-2xl overflow-hidden border-2 border-text-primary shadow-lg bg-thirdary">
-                      <img
-                        src={data.about.profileImage || data.hero.profileImage || "/images/hero.jpg"}
-                        alt="Foto About Me"
-                        className="w-full h-full object-cover"
-                      />
+                      {isVideoUrl(data.about.profileImage || data.hero.profileImage) ? (
+                        <video
+                          src={data.about.profileImage || data.hero.profileImage}
+                          autoPlay
+                          loop
+                          muted
+                          playsInline
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <img
+                          src={data.about.profileImage || data.hero.profileImage || "/images/hero.jpg"}
+                          alt="Foto / Video About Me"
+                          className="w-full h-full object-cover"
+                        />
+                      )}
                     </div>
-                    <span className="text-[11px] font-bold text-text-secondary mt-2">Preview Foto About Me (4:5)</span>
+                    <span className="text-[11px] font-bold text-text-secondary mt-2">
+                      {isVideoUrl(data.about.profileImage || data.hero.profileImage) ? "Preview Video Looping (4:5)" : "Preview Foto About Me (4:5)"}
+                    </span>
                   </div>
 
                   <div className="md:col-span-8 flex flex-col gap-4">
                     <div>
                       <label className="text-xs uppercase font-bold tracking-wider text-text-secondary block mb-2">
-                        Upload Foto About Me Baru Dari Komputer / HP
+                        Upload Foto / Video About Me Baru Dari Komputer / HP (Looping Video Didukung)
                       </label>
                       <input
                         type="file"
-                        accept="image/*"
+                        accept="image/*,video/mp4,video/webm,video/quicktime,video/*"
                         onChange={(e) => handlePhotoUpload(e, "about")}
                         disabled={uploadingTarget === "about"}
                         className="block w-full text-sm text-text-secondary file:mr-4 file:py-2.5 file:px-5 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-text-primary file:text-background hover:file:opacity-90 file:cursor-pointer cursor-pointer border border-text-secondary/20 rounded-xl p-2 bg-background"
                       />
                       {uploadingTarget === "about" && (
-                        <p className="text-xs text-amber-500 font-bold mt-2 animate-pulse">Sedang mengunggah foto About Me...</p>
+                        <p className="text-xs text-amber-500 font-bold mt-2 animate-pulse">Sedang mengunggah media About Me...</p>
                       )}
                     </div>
 
                     <div className="pt-1">
                       <label className="text-xs uppercase font-bold tracking-wider text-text-secondary block mb-2">
-                        Atau Masukkan Path / URL Foto About Me Langsung
+                        Atau Masukkan Path / URL Foto / Video About Me Langsung
                       </label>
                       <input
                         type="text"
@@ -1011,7 +1084,7 @@ export default function CMSPanel() {
                             about: { ...prev.about, profileImage: e.target.value },
                           }))
                         }
-                        placeholder="/images/adhitya.jpg atau https://..."
+                        placeholder="/images/adhitya.jpg atau https://.../video.mp4"
                         className="w-full bg-background border border-text-secondary/20 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-text-primary text-text-primary font-medium"
                       />
                     </div>
@@ -1591,35 +1664,48 @@ export default function CMSPanel() {
                 <div className="grid grid-cols-1 sm:grid-cols-12 gap-6 items-center">
                   <div className="sm:col-span-4 flex flex-col items-center">
                     <div className="relative w-32 h-40 rounded-2xl overflow-hidden border-2 border-text-primary shadow-md bg-thirdary">
-                      <img
-                        src={data.about.profileImage || data.hero.profileImage || "/images/hero.jpg"}
-                        alt="Foto About Me"
-                        className="w-full h-full object-cover"
-                      />
+                      {isVideoUrl(data.about.profileImage || data.hero.profileImage) ? (
+                        <video
+                          src={data.about.profileImage || data.hero.profileImage}
+                          autoPlay
+                          loop
+                          muted
+                          playsInline
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <img
+                          src={data.about.profileImage || data.hero.profileImage || "/images/hero.jpg"}
+                          alt="Foto / Video About Me"
+                          className="w-full h-full object-cover"
+                        />
+                      )}
                     </div>
-                    <span className="text-[10px] font-bold text-text-secondary mt-2">Preview Foto About Me (4:5)</span>
+                    <span className="text-[10px] font-bold text-text-secondary mt-2">
+                      {isVideoUrl(data.about.profileImage || data.hero.profileImage) ? "Preview Video Looping (4:5)" : "Preview Foto About Me (4:5)"}
+                    </span>
                   </div>
 
                   <div className="sm:col-span-8 flex flex-col gap-3">
                     <div>
                       <label className="text-xs uppercase font-bold text-text-secondary block mb-1">
-                        Upload Foto Baru
+                        Upload Foto / Video Baru (Looping Video Didukung)
                       </label>
                       <input
                         type="file"
-                        accept="image/*"
+                        accept="image/*,video/mp4,video/webm,video/quicktime,video/*"
                         onChange={(e) => handlePhotoUpload(e, "about")}
                         disabled={uploadingTarget === "about"}
                         className="block w-full text-xs text-text-secondary file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-text-primary file:text-background hover:file:opacity-90 file:cursor-pointer cursor-pointer border border-text-secondary/20 rounded-xl p-1.5 bg-background"
                       />
                       {uploadingTarget === "about" && (
-                        <p className="text-xs text-amber-500 font-bold mt-2 animate-pulse">Sedang mengunggah foto About Me...</p>
+                        <p className="text-xs text-amber-500 font-bold mt-2 animate-pulse">Sedang mengunggah media About Me...</p>
                       )}
                     </div>
 
                     <div>
                       <label className="text-xs uppercase font-bold text-text-secondary block mb-1">
-                        Atau URL / Path Foto
+                        Atau URL / Path Foto / Video
                       </label>
                       <input
                         type="text"
@@ -1630,7 +1716,7 @@ export default function CMSPanel() {
                             about: { ...prev.about, profileImage: e.target.value },
                           }))
                         }
-                        placeholder="/images/adhitya.jpg atau https://..."
+                        placeholder="/images/adhitya.jpg atau https://.../video.mp4"
                         className="w-full bg-background border border-text-secondary/20 rounded-xl px-3 py-2 text-xs font-medium"
                       />
                     </div>
