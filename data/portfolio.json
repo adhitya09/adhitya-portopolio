@@ -100,7 +100,7 @@
   "about": {
     "sectionTag": "Discover",
     "title": "About Me",
-    "profileImage": "/uploads/1791432340532_WhatsApp_Image_2026-10-04_at_00_56_51.jpeg",
+    "profileImage": "https://abghvocsutuavbtngkan.supabase.co/storage/v1/object/public/portfolio-assets/uploads/1791815288454_DSC05395.JPG",
     "backdropWord": "ENG.",
     "whoAmI": "Saya Sarjana Komputer (S.Kom.) dari program studi Sistem Informasi Institut Teknologi Kalimantan (ITK) dengan keahlian dalam Software Engineering, Backend Development, DevOps & Linux Server Management, Software QA (Maestro automation & regression testing), serta Business Intelligence. Berdedikasi membangun arsitektur sistem yang skalabel, aman, dan mudah dimaintain dari perancangan database hingga deployment produksi.",
     "personalDetails": {

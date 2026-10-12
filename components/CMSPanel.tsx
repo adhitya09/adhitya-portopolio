@@ -431,63 +431,53 @@ export default function CMSPanel() {
             const publicUrl = pubData?.publicUrl
 
             if (publicUrl) {
-              let updatedData: PortfolioData | null = null
+              let updatedData: PortfolioData = { ...data }
               if (targetField === "about") {
-                setData((prev) => {
-                  updatedData = { ...prev, about: { ...prev.about, profileImage: publicUrl } }
-                  return updatedData
-                })
+                updatedData = { ...data, about: { ...data.about, profileImage: publicUrl } }
+                setData(updatedData)
                 showToast(
                   isVideo
                     ? "Video looping About Me berhasil diunggah! Otomatis tersimpan dan diputar di Live Site."
                     : "Foto profil About Me berhasil diunggah dan otomatis tersimpan di Live Site!"
                 )
               } else if (targetField === "profile") {
-                setData((prev) => {
-                  updatedData = { ...prev, hero: { ...prev.hero, profileImage: publicUrl } }
-                  return updatedData
-                })
+                updatedData = { ...data, hero: { ...data.hero, profileImage: publicUrl } }
+                setData(updatedData)
                 showToast(
                   isVideo
                     ? "Video Home / Hero berhasil diunggah dan otomatis tersimpan!"
                     : "Foto profil Home / Hero berhasil diunggah dan otomatis tersimpan!"
                 )
               } else if (targetField === "cvProfile") {
-                setData((prev) => {
-                  updatedData = { ...prev, cvProfileImage: publicUrl } as any
-                  return updatedData
-                })
+                updatedData = { ...data, cvProfileImage: publicUrl } as any
+                setData(updatedData)
                 showToast("Foto profil khusus CV ATS berhasil diunggah!")
               } else if (targetField === "project" && typeof projectIndex === "number") {
-                setData((prev) => {
-                  const nextProjects = [...prev.projects.items]
-                  nextProjects[projectIndex] = {
-                    ...nextProjects[projectIndex],
-                    imagePath: publicUrl,
-                  }
-                  updatedData = {
-                    ...prev,
-                    projects: {
-                      ...prev.projects,
-                      items: nextProjects,
-                    },
-                  }
-                  return updatedData
-                })
+                const nextProjects = [...data.projects.items]
+                nextProjects[projectIndex] = {
+                  ...nextProjects[projectIndex],
+                  imagePath: publicUrl,
+                }
+                updatedData = {
+                  ...data,
+                  projects: {
+                    ...data.projects,
+                    items: nextProjects,
+                  },
+                }
+                setData(updatedData)
                 showToast("Screenshot proyek berhasil diunggah!")
               }
 
               // Auto-persist directly to API & Supabase database
-              if (updatedData) {
-                try {
-                  localStorage.setItem("adhitya_portfolio_custom", JSON.stringify(updatedData))
-                  fetch("/api/portfolio", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(updatedData),
-                  }).catch(() => {})
-                } catch (e) {}
-              }
+              try {
+                localStorage.setItem("adhitya_portfolio_custom", JSON.stringify(updatedData))
+                fetch("/api/portfolio", {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify(updatedData),
+                }).catch(() => {})
+              } catch (e) {}
               return
             }
           } else {
@@ -518,54 +508,44 @@ export default function CMSPanel() {
       const result = await res.json()
 
       if (result.success && result.url) {
-        let updatedData: PortfolioData | null = null
+        let updatedData: PortfolioData = { ...data }
         if (targetField === "profile") {
-          setData((prev) => {
-            updatedData = { ...prev, hero: { ...prev.hero, profileImage: result.url } }
-            return updatedData
-          })
+          updatedData = { ...data, hero: { ...data.hero, profileImage: result.url } }
+          setData(updatedData)
           showToast(isVideo ? "Video Home / Hero berhasil diunggah!" : "Foto profil Home / Hero berhasil diunggah!")
         } else if (targetField === "about") {
-          setData((prev) => {
-            updatedData = { ...prev, about: { ...prev.about, profileImage: result.url } }
-            return updatedData
-          })
+          updatedData = { ...data, about: { ...data.about, profileImage: result.url } }
+          setData(updatedData)
           showToast(isVideo ? "Video looping About Me berhasil diunggah!" : "Foto profil About Me berhasil diunggah!")
         } else if (targetField === "cvProfile") {
-          setData((prev) => {
-            updatedData = { ...prev, cvProfileImage: result.url } as any
-            return updatedData
-          })
+          updatedData = { ...data, cvProfileImage: result.url } as any
+          setData(updatedData)
           showToast("Foto profil khusus CV ATS berhasil diunggah!")
         } else if (targetField === "project" && typeof projectIndex === "number") {
-          setData((prev) => {
-            const nextProjects = [...prev.projects.items]
-            nextProjects[projectIndex] = {
-              ...nextProjects[projectIndex],
-              imagePath: result.url,
-            }
-            updatedData = {
-              ...prev,
-              projects: {
-                ...prev.projects,
-                items: nextProjects,
-              },
-            }
-            return updatedData
-          })
+          const nextProjects = [...data.projects.items]
+          nextProjects[projectIndex] = {
+            ...nextProjects[projectIndex],
+            imagePath: result.url,
+          }
+          updatedData = {
+            ...data,
+            projects: {
+              ...data.projects,
+              items: nextProjects,
+            },
+          }
+          setData(updatedData)
           showToast("Screenshot proyek berhasil diunggah!")
         }
 
-        if (updatedData) {
-          try {
-            localStorage.setItem("adhitya_portfolio_custom", JSON.stringify(updatedData))
-            fetch("/api/portfolio", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify(updatedData),
-            }).catch(() => {})
-          } catch (e) {}
-        }
+        try {
+          localStorage.setItem("adhitya_portfolio_custom", JSON.stringify(updatedData))
+          fetch("/api/portfolio", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(updatedData),
+          }).catch(() => {})
+        } catch (e) {}
       } else {
         showToast(result.message || (isVideo ? "Gagal mengunggah video" : "Gagal mengunggah foto"), "error")
       }
