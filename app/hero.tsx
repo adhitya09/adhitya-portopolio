@@ -210,14 +210,10 @@ export default function Hero() {
                     className="w-full h-full object-cover rounded-full aspect-square floating transition-all duration-700"
                   />
                 ) : (
-                  <Image 
+                  <img 
                     src={hero.profileImage || "/images/hero.jpg"} 
                     alt={hero.fullName || hero.name} 
-                    fill
-                    unoptimized
-                    priority 
-                    sizes="(max-width: 640px) 240px, (max-width: 768px) 288px, (max-width: 1024px) 320px, 384px"
-                    className="rounded-full object-cover aspect-square floating transition-all duration-700" 
+                    className="w-full h-full rounded-full object-cover aspect-square floating transition-all duration-700" 
                   />
                 )}
               </div>

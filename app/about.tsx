@@ -78,15 +78,12 @@ export default function About() {
                       className="w-full h-full object-cover rounded-2xl transition-all duration-700 scale-100 group-hover:scale-105"
                     />
                   ) : (
-                    <Image 
+                    <img 
                       src={profileImg} 
                       alt={details.name || "Adhitya Hermawan"} 
-                      fill 
-                      unoptimized
                       loading="eager"
                       onError={() => setMediaError(true)}
-                      className="object-cover transition-all duration-700 scale-100 group-hover:scale-105" 
-                      sizes="(max-width: 1024px) 100vw, 450px"
+                      className="w-full h-full object-cover rounded-2xl transition-all duration-700 scale-100 group-hover:scale-105" 
                     />
                   )}
                   <div className="absolute inset-0 bg-linear-to-t from-background/80 to-transparent opacity-60 group-hover:opacity-20 transition-opacity duration-500 rounded-3xl pointer-events-none"></div>
