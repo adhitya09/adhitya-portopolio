@@ -8,6 +8,9 @@ import TechStack from "./tech-stack"
 import Project from "./project"
 import Contact from "./contact"
 
+export const dynamic = "force-dynamic"
+export const revalidate = 0
+
 export default function Home() {
   return (
     <>
