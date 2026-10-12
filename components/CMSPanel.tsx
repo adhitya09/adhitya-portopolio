@@ -431,31 +431,32 @@ export default function CMSPanel() {
             const publicUrl = pubData?.publicUrl
 
             if (publicUrl) {
+              let updatedData: PortfolioData | null = null
               if (targetField === "about") {
-                setData((prev) => ({
-                  ...prev,
-                  about: { ...prev.about, profileImage: publicUrl },
-                }))
+                setData((prev) => {
+                  updatedData = { ...prev, about: { ...prev.about, profileImage: publicUrl } }
+                  return updatedData
+                })
                 showToast(
                   isVideo
-                    ? "Video looping About Me berhasil diunggah! Otomatis diputar berulang di Live Site."
-                    : "Foto profil About Me berhasil diunggah!"
+                    ? "Video looping About Me berhasil diunggah! Otomatis tersimpan dan diputar di Live Site."
+                    : "Foto profil About Me berhasil diunggah dan otomatis tersimpan di Live Site!"
                 )
               } else if (targetField === "profile") {
-                setData((prev) => ({
-                  ...prev,
-                  hero: { ...prev.hero, profileImage: publicUrl },
-                }))
+                setData((prev) => {
+                  updatedData = { ...prev, hero: { ...prev.hero, profileImage: publicUrl } }
+                  return updatedData
+                })
                 showToast(
                   isVideo
-                    ? "Video Home / Hero berhasil diunggah!"
-                    : "Foto profil Home / Hero berhasil diunggah!"
+                    ? "Video Home / Hero berhasil diunggah dan otomatis tersimpan!"
+                    : "Foto profil Home / Hero berhasil diunggah dan otomatis tersimpan!"
                 )
               } else if (targetField === "cvProfile") {
-                setData((prev) => ({
-                  ...prev,
-                  cvProfileImage: publicUrl,
-                } as any))
+                setData((prev) => {
+                  updatedData = { ...prev, cvProfileImage: publicUrl } as any
+                  return updatedData
+                })
                 showToast("Foto profil khusus CV ATS berhasil diunggah!")
               } else if (targetField === "project" && typeof projectIndex === "number") {
                 setData((prev) => {
@@ -464,15 +465,28 @@ export default function CMSPanel() {
                     ...nextProjects[projectIndex],
                     imagePath: publicUrl,
                   }
-                  return {
+                  updatedData = {
                     ...prev,
                     projects: {
                       ...prev.projects,
                       items: nextProjects,
                     },
                   }
+                  return updatedData
                 })
                 showToast("Screenshot proyek berhasil diunggah!")
+              }
+
+              // Auto-persist directly to API & Supabase database
+              if (updatedData) {
+                try {
+                  localStorage.setItem("adhitya_portfolio_custom", JSON.stringify(updatedData))
+                  fetch("/api/portfolio", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(updatedData),
+                  }).catch(() => {})
+                } catch (e) {}
               }
               return
             }
@@ -504,23 +518,24 @@ export default function CMSPanel() {
       const result = await res.json()
 
       if (result.success && result.url) {
+        let updatedData: PortfolioData | null = null
         if (targetField === "profile") {
-          setData((prev) => ({
-            ...prev,
-            hero: { ...prev.hero, profileImage: result.url },
-          }))
+          setData((prev) => {
+            updatedData = { ...prev, hero: { ...prev.hero, profileImage: result.url } }
+            return updatedData
+          })
           showToast(isVideo ? "Video Home / Hero berhasil diunggah!" : "Foto profil Home / Hero berhasil diunggah!")
         } else if (targetField === "about") {
-          setData((prev) => ({
-            ...prev,
-            about: { ...prev.about, profileImage: result.url },
-          }))
-          showToast(isVideo ? "Video looping About Me berhasil diunggah! Otomatis diputar berulang di Live Site." : "Foto profil About Me berhasil diunggah!")
+          setData((prev) => {
+            updatedData = { ...prev, about: { ...prev.about, profileImage: result.url } }
+            return updatedData
+          })
+          showToast(isVideo ? "Video looping About Me berhasil diunggah!" : "Foto profil About Me berhasil diunggah!")
         } else if (targetField === "cvProfile") {
-          setData((prev) => ({
-            ...prev,
-            cvProfileImage: result.url,
-          } as any))
+          setData((prev) => {
+            updatedData = { ...prev, cvProfileImage: result.url } as any
+            return updatedData
+          })
           showToast("Foto profil khusus CV ATS berhasil diunggah!")
         } else if (targetField === "project" && typeof projectIndex === "number") {
           setData((prev) => {
@@ -529,15 +544,27 @@ export default function CMSPanel() {
               ...nextProjects[projectIndex],
               imagePath: result.url,
             }
-            return {
+            updatedData = {
               ...prev,
               projects: {
                 ...prev.projects,
                 items: nextProjects,
               },
             }
+            return updatedData
           })
           showToast("Screenshot proyek berhasil diunggah!")
+        }
+
+        if (updatedData) {
+          try {
+            localStorage.setItem("adhitya_portfolio_custom", JSON.stringify(updatedData))
+            fetch("/api/portfolio", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(updatedData),
+            }).catch(() => {})
+          } catch (e) {}
         }
       } else {
         showToast(result.message || (isVideo ? "Gagal mengunggah video" : "Gagal mengunggah foto"), "error")

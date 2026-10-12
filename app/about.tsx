@@ -1,4 +1,5 @@
 "use client"
+import { useState } from "react"
 import ScrollVelocity from "@/components/ScrollVelocity"
 import FadeDown from "@/components/animations/FadeDown"
 import Fade from "@/components/animations/Fade"
@@ -10,6 +11,7 @@ import { useLanguage } from "@/components/LanguageContext"
 export default function About() {
   const { data } = usePortfolio()
   const { t, language } = useLanguage()
+  const [mediaError, setMediaError] = useState(false)
   const about = data.about || {}
   const details = about.personalDetails || {}
   const velocity = 50
@@ -32,7 +34,8 @@ export default function About() {
     )
   }
 
-  const profileImg = about.profileImage || data.hero?.profileImage || "/images/hero.jpg"
+  const rawProfileImg = about.profileImage || data.hero?.profileImage || "/images/hero.jpg"
+  const profileImg = mediaError ? "/images/hero.jpg" : rawProfileImg
   const rawScrollTexts = about.scrollTexts && about.scrollTexts.length > 0 
     ? about.scrollTexts 
     : ["Adhitya Hermawan, S.Kom.", "Software Engineer | QA Analyst | Business Intelligence"]
@@ -60,12 +63,14 @@ export default function About() {
                 <div className="relative z-10 p-2 bg-background border border-text-secondary/10 rounded-3xl shadow-2xl overflow-hidden aspect-[4/5] w-full group transition-all duration-500 hover:shadow-[0_20px_40px_-5px_rgb(0,0,0,0.15)] dark:hover:shadow-[0_20px_40px_-5px_rgba(255,255,255,0.05)] hover:-translate-y-1">
                   {isVideoUrl(profileImg) ? (
                     <video
+                      key={profileImg}
                       src={profileImg}
                       autoPlay
                       loop
                       muted
                       playsInline
                       preload="auto"
+                      onError={() => setMediaError(true)}
                       onLoadedData={(e) => {
                         e.currentTarget.muted = true
                         e.currentTarget.play().catch(() => {})
@@ -77,7 +82,9 @@ export default function About() {
                       src={profileImg} 
                       alt={details.name || "Adhitya Hermawan"} 
                       fill 
-                      loading="lazy"
+                      unoptimized
+                      loading="eager"
+                      onError={() => setMediaError(true)}
                       className="object-cover transition-all duration-700 scale-100 group-hover:scale-105" 
                       sizes="(max-width: 1024px) 100vw, 450px"
                     />

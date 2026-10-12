@@ -63,6 +63,7 @@ export default function Project() {
                     src={project.imagePath || "/images/simpro.jpg"} 
                     alt={project.title} 
                     fill 
+                    unoptimized
                     loading="lazy"
                     sizes="(max-width: 1024px) 100vw, 380px"
                     className="object-cover transition-all duration-700 group-hover:scale-105" 
@@ -121,6 +122,7 @@ export default function Project() {
                       src={project.imagePath || "/images/simpro.jpg"} 
                       alt={project.title} 
                       fill 
+                      unoptimized
                       loading="lazy"
                       sizes="(max-width: 640px) 86vw, 380px"
                       className="object-cover transition-all duration-700 group-hover:scale-105" 
