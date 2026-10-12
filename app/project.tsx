@@ -84,10 +84,10 @@ export default function Project() {
                   <div className="absolute top-0 right-6 -translate-y-1/2 bg-background border border-text-secondary/20 px-3 py-1 rounded-full text-[10px] font-bold tracking-widest text-text-secondary shadow-sm">{String(project.index + 1).padStart(2, "0")}</div>
 
                   <div className="flex justify-between items-start mb-4">
-                    <h4 className="text-2xl font-black text-text-primary tracking-tight leading-tight group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-text-primary group-hover:to-text-secondary transition-all duration-500">{project.title}</h4>
+                    <h4 className="text-2xl font-black text-text-primary tracking-tight leading-tight group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-text-primary group-hover:to-text-secondary transition-all duration-500">{t(project.title)}</h4>
                   </div>
 
-                  <p className="text-sm text-text-secondary font-medium leading-relaxed mb-8 flex-grow line-clamp-3 text-justify">{project.shortDescription}</p>
+                  <p className="text-sm text-text-secondary font-medium leading-relaxed mb-8 flex-grow line-clamp-3 text-justify">{t(project.shortDescription)}</p>
 
                   <div className="flex items-center justify-between mt-auto pt-4 border-t border-text-secondary/10">
                     <button className="text-xs font-bold tracking-[0.2em] uppercase text-text-primary flex items-center gap-3 group/btn cursor-pointer" onClick={() => setIsOpen(project.index)}>
@@ -146,11 +146,11 @@ export default function Project() {
                     </div>
 
                     <div className="flex justify-between items-start mb-3">
-                      <h4 className="text-xl sm:text-2xl font-black text-text-primary tracking-tight leading-tight">{project.title}</h4>
+                      <h4 className="text-xl sm:text-2xl font-black text-text-primary tracking-tight leading-tight">{t(project.title)}</h4>
                     </div>
 
                     <p className="text-xs sm:text-sm text-text-secondary font-medium leading-relaxed mb-6 flex-grow line-clamp-3 text-justify">
-                      {project.shortDescription}
+                      {t(project.shortDescription)}
                     </p>
 
                     <div className="flex items-center justify-between mt-auto pt-4 border-t border-text-secondary/10">
@@ -189,34 +189,33 @@ export default function Project() {
           </div>
         </div>
 
-        {/* "Selengkapnya" Button (Replaces "View More on LinkedIn") */}
-        <FadeUp>
-          <div className="mt-16 flex justify-center w-full px-6">
-            {projectList.length > 6 ? (
+        {/* "Selengkapnya" Button: Only shown if project count > 6 */}
+        {projectList.length > 6 && (
+          <FadeUp>
+            <div className="mt-16 flex justify-center w-full px-6">
               <button
                 onClick={() => setShowAll(!showAll)}
                 className="cursor-pointer inline-flex items-center gap-3 px-8 py-4 bg-background border border-text-secondary/20 text-text-primary hover:border-text-primary hover:bg-text-primary hover:text-background rounded-xl font-bold tracking-widest text-sm uppercase transition-all duration-300 ease-out group hover:-translate-y-1.5 hover:scale-[1.02] shadow-sm hover:shadow-xl"
               >
-                <span>{showAll ? (language === "en" ? "Show Less" : "Tampilkan Lebih Sedikit") : (language === "en" ? "Show More" : "Selengkapnya")}</span>
-                <svg className={`w-5 h-5 transition-transform duration-300 ${showAll ? "rotate-180" : "group-hover:translate-y-0.5"}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <span>
+                  {showAll
+                    ? (language === "en" ? "Show Less" : "Tampilkan Lebih Sedikit")
+                    : (language === "en" ? "View More" : "Selengkapnya")}
+                </span>
+                <svg
+                  className={`w-5 h-5 transition-transform duration-300 ${
+                    showAll ? "rotate-180" : "group-hover:translate-y-0.5"
+                  }`}
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
                 </svg>
               </button>
-            ) : (
-              <a
-                href="https://github.com/adhitya09"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="cursor-pointer inline-flex items-center gap-3 px-8 py-4 bg-background border border-text-secondary/20 text-text-primary hover:border-text-primary hover:bg-text-primary hover:text-background rounded-xl font-bold tracking-widest text-sm uppercase transition-all duration-300 ease-out group hover:-translate-y-1.5 hover:scale-[1.02] shadow-sm hover:shadow-xl"
-              >
-                <span>{language === "en" ? "See All on GitHub" : "Selengkapnya"}</span>
-                <svg className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                </svg>
-              </a>
-            )}
-          </div>
-        </FadeUp>
+            </div>
+          </FadeUp>
+        )}
 
         {/* Project Detail Modal */}
         <AnimatePresence>
@@ -226,7 +225,7 @@ export default function Project() {
 
               <motion.div initial={{ opacity: 0, scale: 0.95, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95, y: 20 }} transition={{ type: "spring", damping: 25, stiffness: 300 }} className="bg-background border border-text-secondary/20 rounded-2xl sm:rounded-3xl w-full max-w-2xl max-h-[92vh] overflow-hidden flex flex-col shadow-2xl relative z-10">
                 <div className="flex justify-between items-center p-4 sm:p-6 border-b border-text-secondary/10">
-                  <h4 className="text-xl sm:text-2xl font-black text-text-primary tracking-tight pr-4">{activeProject.title}</h4>
+                  <h4 className="text-xl sm:text-2xl font-black text-text-primary tracking-tight pr-4">{t(activeProject.title)}</h4>
                   <button className="text-text-secondary hover:text-text-primary transition-colors p-2 bg-text-secondary/5 rounded-full cursor-pointer shrink-0" onClick={() => setIsOpen(null)}>
                     <svg className="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path>
@@ -258,7 +257,7 @@ export default function Project() {
                       {activeProject.features.map((feature: string, i: number) => (
                         <li key={i} className="flex items-center bg-thirdary/50 p-3 sm:p-4 rounded-xl border border-text-secondary/5">
                           <span className="text-text-primary mr-3 font-black">&rarr;</span>
-                          <span className="text-xs sm:text-sm font-bold text-text-primary uppercase tracking-wide">{feature}</span>
+                          <span className="text-xs sm:text-sm font-bold text-text-primary uppercase tracking-wide">{t(feature)}</span>
                         </li>
                       ))}
                     </ul>

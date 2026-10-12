@@ -28,8 +28,8 @@ export default function TechStack() {
           <div key={idx} className="flex flex-col md:flex-row gap-8 md:gap-16 items-start">
             <div className="md:w-1/3">
               <FadeDown delay={idx * 0.1}>
-                <h4 className="text-2xl font-black text-text-primary tracking-tight mb-2">{category.title}</h4>
-                <p className="text-text-secondary font-medium text-sm">{category.description}</p>
+                <h4 className="text-2xl font-black text-text-primary tracking-tight mb-2">{t(category.title)}</h4>
+                <p className="text-text-secondary font-medium text-sm text-justify">{t(category.description)}</p>
               </FadeDown>
             </div>
             <div className="md:w-2/3 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 w-full">

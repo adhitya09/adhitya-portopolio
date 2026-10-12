@@ -88,28 +88,73 @@ export default function Contact() {
 
             {/* Social Links Cards */}
             <div className="flex flex-col gap-3">
-              {socialCards.map((card: any, idx: number) => (
-                <a 
-                  key={idx}
-                  href={card.url} 
-                  target="_blank" 
-                  rel="noopener noreferrer" 
-                  className="group bg-background border border-text-secondary/20 rounded-2xl p-4 sm:p-5 flex items-center justify-between hover:border-text-primary hover:bg-thirdary/20 transition-all duration-300 shadow-sm hover:shadow-md"
-                >
-                  <div className="flex items-center gap-4">
-                    <div className="w-11 h-11 rounded-full bg-text-secondary/10 flex items-center justify-center text-text-primary group-hover:scale-110 transition-transform duration-300">
-                      {renderCardIcon(card.icon || card.platform)}
+              {socialCards.map((card: any, idx: number) => {
+                const platform = (card.platform || card.icon || "").toLowerCase()
+                let displayUsername = card.username || ""
+                let targetUrl = card.url || "#"
+
+                if (platform === "email") {
+                  if (card.url && card.url.toLowerCase().startsWith("mailto:")) {
+                    displayUsername = card.url.replace(/^mailto:/i, "").split("?")[0].trim()
+                    targetUrl = card.url
+                  } else if (data.about?.personalDetails?.email) {
+                    displayUsername = data.about.personalDetails.email
+                    targetUrl = `mailto:${data.about.personalDetails.email}`
+                  } else if (card.username && card.username.includes("@") && !card.username.includes("ntaps0989")) {
+                    displayUsername = card.username
+                    targetUrl = `mailto:${card.username}`
+                  } else {
+                    displayUsername = "adhityahermawan0906@gmail.com"
+                    targetUrl = "mailto:adhityahermawan0906@gmail.com"
+                  }
+                } else if (platform === "whatsapp") {
+                  if (card.url && (card.url.includes("wa.me/") || card.url.includes("whatsapp.com"))) {
+                    targetUrl = card.url
+                    const match = card.url.match(/(?:wa\.me\/|phone=)(\+?\d+)/)
+                    if (match && match[1]) {
+                      const raw = match[1].replace(/\+/g, "")
+                      if (raw.startsWith("62")) {
+                        const rest = raw.substring(2)
+                        displayUsername = `+62 ${rest.substring(0, 3)}-${rest.substring(3, 7)}-${rest.substring(7)}`
+                      } else {
+                        displayUsername = `+${raw}`
+                      }
+                    }
+                  } else if (data.about?.personalDetails?.phone) {
+                    displayUsername = data.about.personalDetails.phone
+                    const cleanDigits = data.about.personalDetails.phone.replace(/[^0-9]/g, "")
+                    targetUrl = `https://wa.me/${cleanDigits}`
+                  }
+                  
+                  if (displayUsername.includes("852-4828-9959")) {
+                    displayUsername = "+62 896-3610-7188"
+                    targetUrl = "https://wa.me/6289636107188"
+                  }
+                }
+
+                return (
+                  <a 
+                    key={idx}
+                    href={targetUrl} 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    className="group bg-background border border-text-secondary/20 rounded-2xl p-4 sm:p-5 flex items-center justify-between hover:border-text-primary hover:bg-thirdary/20 transition-all duration-300 shadow-sm hover:shadow-md"
+                  >
+                    <div className="flex items-center gap-4">
+                      <div className="w-11 h-11 rounded-full bg-text-secondary/10 flex items-center justify-center text-text-primary group-hover:scale-110 transition-transform duration-300">
+                        {renderCardIcon(card.icon || card.platform)}
+                      </div>
+                      <div>
+                        <h4 className="text-base font-bold text-text-primary">{t(card.platform)}</h4>
+                        <p className="text-xs font-medium text-text-secondary">{displayUsername}</p>
+                      </div>
                     </div>
-                    <div>
-                      <h4 className="text-base font-bold text-text-primary">{card.platform}</h4>
-                      <p className="text-xs font-medium text-text-secondary">{card.username}</p>
-                    </div>
-                  </div>
-                  <svg className="w-5 h-5 text-text-secondary group-hover:text-text-primary group-hover:translate-x-1 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
-                  </svg>
-                </a>
-              ))}
+                    <svg className="w-5 h-5 text-text-secondary group-hover:text-text-primary group-hover:translate-x-1 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                    </svg>
+                  </a>
+                )
+              })}
             </div>
           </div>
         </FadeDown>

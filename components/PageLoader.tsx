@@ -34,11 +34,11 @@ export default function PageLoader() {
 
     const exitTimer = setTimeout(() => {
       setIsExiting(true)
-    }, 600)
+    }, 1600)
 
     const removeTimer = setTimeout(() => {
       setIsLoading(false)
-    }, 900)
+    }, 1950)
 
     return () => {
       clearTimeout(exitTimer)

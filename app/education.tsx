@@ -56,26 +56,26 @@ export default function Education() {
               {/* Right Column: Details */}
               <div className="md:col-span-3 flex flex-col">
                 <h4 className="text-2xl font-bold text-text-primary tracking-tight mb-1 group-hover/item:text-text-primary transition-colors">
-                  {edu.institution}
+                  {t(edu.institution)}
                 </h4>
                 <h5 className="text-sm font-bold text-text-secondary tracking-wide uppercase mb-4">
-                  {edu.degree}
+                  {t(edu.degree)}
                 </h5>
 
                 {edu.description && (
                   <p className="text-base text-text-secondary font-medium leading-relaxed mb-4 text-justify">
-                    {edu.description}
+                    {t(edu.description)}
                   </p>
                 )}
 
                 {edu.activities && edu.activities.length > 0 && (
                   <div className="flex flex-col gap-2 mt-2">
                     <span className="text-xs font-bold uppercase tracking-wider text-text-secondary">
-                      {language === "en" ? "Activities & Leadership:" : "Aktivitas & Kepemimpinan:"}
+                      {t("Activities & Leadership:")}
                     </span>
                     <ul className="flex flex-col gap-1.5 pl-4 list-disc text-sm text-text-secondary/90 font-medium">
                       {edu.activities.map((act: string, i: number) => (
-                        <li key={i}>{act}</li>
+                        <li key={i}>{t(act)}</li>
                       ))}
                     </ul>
                   </div>

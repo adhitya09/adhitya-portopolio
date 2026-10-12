@@ -139,7 +139,7 @@ export default function Hero() {
     }
   }
 
-  const currentRole = texts[index] || ""
+  const currentRole = t(texts[index] || "")
   const currentSub = currentRole.substring(0, subIndex)
 
   return (
@@ -160,7 +160,7 @@ export default function Hero() {
             </div>
 
             <div className="max-w-xl mt-3 sm:mt-4">
-              <p className="text-text-secondary text-sm sm:text-base md:text-lg leading-relaxed font-medium text-justify">{hero.description}</p>
+              <p className="text-text-secondary text-sm sm:text-base md:text-lg leading-relaxed font-medium text-justify">{t(hero.description)}</p>
             </div>
 
             <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mt-6 sm:mt-8">
@@ -220,7 +220,7 @@ export default function Hero() {
                   key={stat.id || statIdx}
                 >
                   <div className="bg-text-primary text-background p-2 rounded-xl shrink-0">{renderStatIcon(stat.icon)}</div>
-                  <span className="text-xs md:text-sm font-semibold text-text-primary truncate sm:whitespace-nowrap">{stat.message}</span>
+                  <span className="text-xs md:text-sm font-semibold text-text-primary truncate sm:whitespace-nowrap">{t(stat.message)}</span>
                 </div>
               ))}
             </div>

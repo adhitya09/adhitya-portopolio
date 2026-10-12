@@ -64,7 +64,7 @@ export default function About() {
                   {t("Who Am I")}
                 </h4>
                 <p className="text-base md:text-lg text-text-secondary leading-relaxed font-medium text-justify">
-                  {about.whoAmI || "Saya Sarjana Komputer (S.Kom.) dari program studi Sistem Informasi Institut Teknologi Kalimantan (ITK) dengan keahlian dalam Software Engineering, Backend Development, DevOps & Linux Server Management, Software QA, serta Business Intelligence."}
+                  {t(about.whoAmI || "Saya Sarjana Komputer (S.Kom.) dari program studi Sistem Informasi Institut Teknologi Kalimantan (ITK) dengan keahlian dalam Software Engineering, Backend Development, DevOps & Linux Server Management, Software QA, serta Business Intelligence.")}
                 </p>
               </Fade>
             </div>
@@ -91,7 +91,7 @@ export default function About() {
                     <span className="text-xs uppercase tracking-widest font-bold text-text-secondary mb-1">
                       {t("Location")}
                     </span>
-                    <span className="text-base font-semibold text-text-primary">{details.location || "Balikpapan, Kalimantan Timur"}</span>
+                    <span className="text-base font-semibold text-text-primary">{t(details.location || "Balikpapan, Kalimantan Timur")}</span>
                   </div>
                 </FadeLeft>
 
@@ -100,8 +100,8 @@ export default function About() {
                     <span className="text-xs uppercase tracking-widest font-bold text-text-secondary mb-1">
                       {t("Phone / WhatsApp")}
                     </span>
-                    <a href={details.phoneUrl || "https://wa.me/6285248289959"} target="_blank" rel="noopener noreferrer" className="text-base font-semibold text-text-primary hover:text-text-secondary transition-colors underline decoration-text-secondary/30 underline-offset-4">
-                      {details.phone || "+62 852-4828-9959"}
+                    <a href={details.phoneUrl || "https://wa.me/6289636107188"} target="_blank" rel="noopener noreferrer" className="text-base font-semibold text-text-primary hover:text-text-secondary transition-colors underline decoration-text-secondary/30 underline-offset-4">
+                      {details.phone || "+62 896-3610-7188"}
                     </a>
                   </div>
                 </FadeLeft>
@@ -120,8 +120,8 @@ export default function About() {
                     <span className="text-xs uppercase tracking-widest font-bold text-text-secondary mb-1">
                       {t("Email")}
                     </span>
-                    <a href={`mailto:${details.email || "ntaps0989@gmail.com"}`} className="text-base font-semibold text-text-primary hover:text-text-secondary transition-colors underline decoration-text-secondary/30 underline-offset-4">
-                      {details.email || "ntaps0989@gmail.com"}
+                    <a href={`mailto:${details.email || "adhityahermawan0906@gmail.com"}`} className="text-base font-semibold text-text-primary hover:text-text-secondary transition-colors underline decoration-text-secondary/30 underline-offset-4">
+                      {details.email || "adhityahermawan0906@gmail.com"}
                     </a>
                   </div>
                 </FadeLeft>
@@ -131,7 +131,7 @@ export default function About() {
                     <span className="text-xs uppercase tracking-widest font-bold text-text-secondary mb-1">
                       {language === "en" ? "Education" : "Pendidikan"}
                     </span>
-                    <span className="text-base font-semibold text-text-primary">{details.education || "Institut Teknologi Kalimantan (ITK)"}</span>
+                    <span className="text-base font-semibold text-text-primary">{t(details.education || "Institut Teknologi Kalimantan (ITK)")}</span>
                   </div>
                 </FadeLeft>
               </div>

@@ -1,5 +1,5 @@
 "use client"
-import React, { createContext, useContext, useState, useEffect, useCallback } from "react"
+import React, { createContext, useContext, useState, useEffect, useCallback, useRef } from "react"
 
 export type Language = "id" | "en"
 
@@ -25,14 +25,27 @@ const STATIC_MAP: Record<string, string> = {
   "Proyek": "Projects",
   "Contacts": "Contact",
   "Kontak": "Contact",
+  "Contact": "Contact",
 
   // Hero
   "Explore Work": "Explore Work",
   "Jelajahi Karya": "Explore Work",
-  "Download CV": "Download ATS CV",
-  "Unduh CV": "Download ATS CV",
+  "Download CV": "Download CV",
+  "Download ATS CV": "Download ATS CV",
+  "Unduh CV": "Download CV",
   "Connect": "Connect",
   "Hubungkan": "Connect",
+  "Hi, I'm": "Hi, I'm",
+  "Halo, Saya": "Hi, I'm",
+  "S.Kom. Graduate": "Bachelor of Computer Science (S.Kom.)",
+  "S.Kom. Graduate ": "Bachelor of Computer Science (S.Kom.)",
+  "Software Engineer": "Software Engineer",
+  "Software Engineer ": "Software Engineer",
+  "QA Analyst": "QA Analyst",
+  "Business Intelligence": "Business Intelligence",
+  "BPMN Engineer": "BPMN Engineer",
+  "Full-Stack Web Developer": "Full-Stack Web Developer",
+  "DevOps & Cloud Ready": "DevOps & Cloud Ready",
 
   // Sections
   "Discover": "Discover",
@@ -65,15 +78,25 @@ const STATIC_MAP: Record<string, string> = {
   "Kontak Saya": "Contact Me",
 
   // Actions
-  "Selengkapnya": "Show More",
+  "Selengkapnya": "View More",
+  "View More": "View More",
+  "Show More": "Show More",
+  "Show Less": "Show Less",
   "Tampilkan Lebih Sedikit": "Show Less",
   "View Details": "View Details",
   "Lihat Detail": "View Details",
   "Project Details": "Project Details",
+  "Detail Proyek": "Project Details",
   "Source Code": "Source Code",
+  "Kode Sumber": "Source Code",
   "Key Features": "Key Features",
+  "Fitur Utama": "Key Features",
   "Created": "Created",
+  "Dibuat": "Created",
   "Technologies": "Technologies",
+  "Teknologi": "Technologies",
+  "Close": "Close",
+  "Tutup": "Close",
 
   // Details
   "Name": "Name",
@@ -85,6 +108,28 @@ const STATIC_MAP: Record<string, string> = {
   "GPA": "GPA",
   "IPK": "GPA",
   "Email": "Email",
+  "Balikpapan, Kalimantan Timur": "Balikpapan, East Kalimantan",
+  "Balikpapan, Kalimantan Timur, Indonesia": "Balikpapan, East Kalimantan, Indonesia",
+  "Activities & Leadership:": "Activities & Leadership:",
+  "Aktivitas & Kepemimpinan:": "Activities & Leadership:",
+  "Activities & Leadership": "Activities & Leadership",
+  "Aktivitas & Kepemimpinan": "Activities & Leadership",
+  "← Swipe horizontally to explore projects →": "← Swipe horizontally to explore projects →",
+  "← Geser ke samping untuk melihat proyek lainnya →": "← Swipe horizontally to explore projects →",
+  "LinkedIn": "LinkedIn",
+  "GitHub": "GitHub",
+  "Instagram": "Instagram",
+  "WhatsApp": "WhatsApp",
+
+  // Roles & Institutions
+  "Kepala Badan Usaha Milik Himpunan (BUMH)": "Head of Student Union Enterprise (BUMH)",
+  "Staff Ahli Divisi Acara": "Expert Staff of Event Division",
+  "Kepala Divisi Perkamjin": "Head of Logistics, Security & Licensing Division",
+  "Ketua Pelaksana EXSIS": "Chief Executive of EXSIS",
+  "Panitia Divisi Acara": "Event Division Committee",
+  "Institut Teknologi Kalimantan (ITK)": "Kalimantan Institute of Technology (ITK)",
+  "Sarjana Komputer (S.Kom.)": "Bachelor of Computer Science (S.Kom.)",
+  "Sistem Informasi": "Information Systems",
 }
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined)
@@ -93,6 +138,10 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
   const [language, setLanguageState] = useState<Language>("id")
   const [cache, setCache] = useState<Record<string, string>>({})
   const [isTranslating, setIsTranslating] = useState(false)
+
+  const queueRef = useRef<Set<string>>(new Set())
+  const inFlightRef = useRef<Set<string>>(new Set())
+  const debounceTimerRef = useRef<NodeJS.Timeout | null>(null)
 
   useEffect(() => {
     try {
@@ -114,44 +163,114 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
     } catch (e) {}
   }
 
-  // Fast synchronous translator for labels
+  // Batch process translation queue
+  const processBatchQueue = useCallback(() => {
+    if (queueRef.current.size === 0) return
+
+    const textsToTranslate = Array.from(queueRef.current)
+    queueRef.current.clear()
+
+    textsToTranslate.forEach((t) => inFlightRef.current.add(t))
+    setIsTranslating(true)
+
+    fetch("/api/translate", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ texts: textsToTranslate, target: "en", source: "id" }),
+    })
+      .then((res) => res.json())
+      .then((json) => {
+        if (json.success && Array.isArray(json.translations)) {
+          setCache((prev) => {
+            const next = { ...prev }
+            textsToTranslate.forEach((orig, idx) => {
+              const trans = json.translations[idx]
+              if (trans && trans !== orig) {
+                next[orig] = trans
+                next[orig.trim()] = trans
+              }
+            })
+            try {
+              localStorage.setItem("adhitya_trans_cache", JSON.stringify(next))
+            } catch (e) {}
+            return next
+          })
+        }
+      })
+      .catch((err) => console.warn("Auto translation batch error:", err))
+      .finally(() => {
+        textsToTranslate.forEach((t) => inFlightRef.current.delete(t))
+        setIsTranslating(false)
+      })
+  }, [])
+
+  // Auto request translation for missing dynamic strings
+  const requestTranslation = useCallback(
+    (text: string) => {
+      if (!text || typeof text !== "string") return
+      const trimmed = text.trim()
+
+      if (
+        trimmed.length < 2 ||
+        STATIC_MAP[trimmed] ||
+        STATIC_MAP[text] ||
+        cache[trimmed] ||
+        cache[text] ||
+        queueRef.current.has(trimmed) ||
+        inFlightRef.current.has(trimmed)
+      ) {
+        return
+      }
+
+      queueRef.current.add(trimmed)
+      if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current)
+      debounceTimerRef.current = setTimeout(processBatchQueue, 80)
+    },
+    [cache, processBatchQueue]
+  )
+
+  // Reactive translator
   const t = useCallback(
     (text: string, enFallback?: string): string => {
-      if (!text) return ""
+      if (!text || typeof text !== "string") return text || ""
       if (language === "id") return text
 
-      // If user provided direct English fallback, use it
+      const trimmed = text.trim()
+
       if (enFallback) return enFallback
-
-      // Check static map
+      if (STATIC_MAP[trimmed]) return STATIC_MAP[trimmed]
       if (STATIC_MAP[text]) return STATIC_MAP[text]
-
-      // Check cache
+      if (cache[trimmed]) return cache[trimmed]
       if (cache[text]) return cache[text]
+
+      // Queue automatic background translation for dynamic / CMS inputs
+      requestTranslation(text)
 
       return text
     },
-    [language, cache]
+    [language, cache, requestTranslation]
   )
 
-  // Asynchronous automatic translator for dynamic descriptions
+  // Asynchronous direct single-text translator
   const translateDynamic = useCallback(
     async (text: string): Promise<string> => {
       if (!text || language === "id") return text
-      if (cache[text]) return cache[text]
+      const trimmed = text.trim()
+      if (STATIC_MAP[trimmed]) return STATIC_MAP[trimmed]
+      if (cache[trimmed]) return cache[trimmed]
 
       try {
         setIsTranslating(true)
         const res = await fetch("/api/translate", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ texts: text, target: "en", source: "id" }),
+          body: JSON.stringify({ texts: trimmed, target: "en", source: "id" }),
         })
         const json = await res.json()
         if (json.success && json.translation) {
           const trans = json.translation
           setCache((prev) => {
-            const next = { ...prev, [text]: trans }
+            const next = { ...prev, [trimmed]: trans, [text]: trans }
             try {
               localStorage.setItem("adhitya_trans_cache", JSON.stringify(next))
             } catch (e) {}
@@ -160,7 +279,7 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
           return trans
         }
       } catch (err) {
-        console.warn("Dynamic translation failed:", err)
+        console.warn("Direct dynamic translation failed:", err)
       } finally {
         setIsTranslating(false)
       }

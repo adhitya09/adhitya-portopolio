@@ -1729,15 +1729,31 @@ export default function CMSPanel() {
                     <input
                       type="text"
                       value={data.about.personalDetails?.phone || ""}
-                      onChange={(e) =>
+                      onChange={(e) => {
+                        const val = e.target.value
+                        const cleanDigits = val.replace(/[^0-9]/g, "")
+                        const nextCards = (data.contact?.socialCards || []).map((c: any) => {
+                          if ((c.platform || "").toLowerCase() === "whatsapp") {
+                            return {
+                              ...c,
+                              username: val,
+                              url: cleanDigits ? `https://wa.me/${cleanDigits}` : c.url,
+                            }
+                          }
+                          return c
+                        })
                         setData({
                           ...data,
                           about: {
                             ...data.about,
-                            personalDetails: { ...data.about.personalDetails, phone: e.target.value },
+                            personalDetails: { ...data.about.personalDetails, phone: val },
+                          },
+                          contact: {
+                            ...data.contact,
+                            socialCards: nextCards,
                           },
                         })
-                      }
+                      }}
                       className="w-full bg-background border border-text-secondary/20 rounded-xl p-3 text-sm font-medium"
                     />
                   </div>
@@ -1763,15 +1779,30 @@ export default function CMSPanel() {
                     <input
                       type="text"
                       value={data.about.personalDetails?.email || ""}
-                      onChange={(e) =>
+                      onChange={(e) => {
+                        const val = e.target.value
+                        const nextCards = (data.contact?.socialCards || []).map((c: any) => {
+                          if ((c.platform || "").toLowerCase() === "email") {
+                            return {
+                              ...c,
+                              username: val,
+                              url: val ? `mailto:${val}` : c.url,
+                            }
+                          }
+                          return c
+                        })
                         setData({
                           ...data,
                           about: {
                             ...data.about,
-                            personalDetails: { ...data.about.personalDetails, email: e.target.value },
+                            personalDetails: { ...data.about.personalDetails, email: val },
+                          },
+                          contact: {
+                            ...data.contact,
+                            socialCards: nextCards,
                           },
                         })
-                      }
+                      }}
                       className="w-full bg-background border border-text-secondary/20 rounded-xl p-3 text-sm font-medium"
                     />
                   </div>
@@ -2951,8 +2982,25 @@ export default function CMSPanel() {
                         type="text"
                         value={card.url}
                         onChange={(e) => {
+                          const val = e.target.value
                           const nextCards = [...data.contact.socialCards]
-                          nextCards[idx].url = e.target.value
+                          nextCards[idx].url = val
+
+                          const p = (card.platform || "").toLowerCase()
+                          if (p === "email" && val.includes("@")) {
+                            nextCards[idx].username = val.replace(/^mailto:/i, "").split("?")[0].trim()
+                          } else if (p === "whatsapp" && (val.includes("wa.me/") || val.includes("whatsapp.com"))) {
+                            const match = val.match(/(?:wa\.me\/|phone=)(\+?\d+)/)
+                            if (match && match[1]) {
+                              const raw = match[1].replace(/\+/g, "")
+                              if (raw.startsWith("62") && raw.length >= 9) {
+                                const rest = raw.substring(2)
+                                nextCards[idx].username = `+62 ${rest.substring(0, 3)}-${rest.substring(3, 7)}-${rest.substring(7)}`
+                              } else {
+                                nextCards[idx].username = `+${raw}`
+                              }
+                            }
+                          }
                           setData({ ...data, contact: { ...data.contact, socialCards: nextCards } })
                         }}
                         className="w-full bg-background border border-text-secondary/20 rounded-xl p-2.5 text-sm font-medium"

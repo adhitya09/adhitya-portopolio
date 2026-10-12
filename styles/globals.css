@@ -233,6 +233,6 @@ html {
 }
 
 .animate-loader-progress {
-  animation: loader-progress 0.65s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  animation: loader-progress 1.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
   will-change: transform;
 }
