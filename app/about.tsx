@@ -15,9 +15,10 @@ export default function About() {
   const velocity = 50
 
   const profileImg = about.profileImage || data.hero?.profileImage || "/images/hero.jpg"
-  const scrollTexts = about.scrollTexts && about.scrollTexts.length > 0 
+  const rawScrollTexts = about.scrollTexts && about.scrollTexts.length > 0 
     ? about.scrollTexts 
     : ["Adhitya Hermawan, S.Kom.", "Software Engineer | QA Analyst | Business Intelligence"]
+  const scrollTexts = rawScrollTexts.map((st: string) => t(st))
 
   return (
     <>

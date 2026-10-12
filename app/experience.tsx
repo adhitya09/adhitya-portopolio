@@ -45,7 +45,7 @@ export default function Experience() {
               
               {/* Left Column: Date */}
               <div className="md:col-span-1 pt-1 md:pt-2">
-                <span className="text-xs font-bold tracking-widest text-text-secondary uppercase">{exp.date}</span>
+                <span className="text-xs font-bold tracking-widest text-text-secondary uppercase">{t(exp.date)}</span>
               </div>
 
               {/* Right Column: Details */}

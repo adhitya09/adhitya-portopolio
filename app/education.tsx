@@ -42,9 +42,9 @@ export default function Education() {
             >
               {/* Left Column: Date & Location */}
               <div className="md:col-span-1 pt-1 md:pt-2 flex flex-col">
-                <span className="text-xs font-bold tracking-widest text-text-secondary uppercase">{edu.date}</span>
+                <span className="text-xs font-bold tracking-widest text-text-secondary uppercase">{t(edu.date)}</span>
                 {edu.location && (
-                  <span className="text-xs font-medium text-text-secondary/70 mt-1">{edu.location}</span>
+                  <span className="text-xs font-medium text-text-secondary/70 mt-1">{t(edu.location)}</span>
                 )}
                 {edu.gpa && (
                   <span className="inline-block mt-3 text-xs font-bold bg-thirdary text-text-primary px-3 py-1 rounded-md border border-text-secondary/15 w-fit">

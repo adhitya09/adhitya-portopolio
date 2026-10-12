@@ -31,33 +31,41 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // 2. Fallback to local storage
+    // 2. Fallback: If local environment, write to public/uploads
     const uploadsDir = path.join(process.cwd(), "public", "uploads")
-    if (!fs.existsSync(uploadsDir)) {
-      try {
-        fs.mkdirSync(uploadsDir, { recursive: true })
-      } catch (e) {}
-    }
-
-    const filePath = path.join(uploadsDir, filename)
+    let localSaved = false
     try {
+      if (!fs.existsSync(uploadsDir)) {
+        fs.mkdirSync(uploadsDir, { recursive: true })
+      }
+      const filePath = path.join(uploadsDir, filename)
       fs.writeFileSync(filePath, buffer)
-    } catch (e) {
-      console.warn("Could not write file to local disk (expected on read-only serverless):", e)
-    }
+      localSaved = true
 
-    // If type is profile, also try updating public/images/hero.jpg for fallback
-    if (type === "profile") {
-      const heroPath = path.join(process.cwd(), "public", "images", "hero.jpg")
-      try {
+      if (type === "profile") {
+        const heroPath = path.join(process.cwd(), "public", "images", "hero.jpg")
         fs.writeFileSync(heroPath, buffer)
-      } catch (e) {}
+      }
+    } catch (e) {
+      // Expected on read-only serverless environment like Vercel
+      localSaved = false
     }
 
-    const publicUrl = `/uploads/${filename}`
+    if (localSaved && process.env.NODE_ENV !== "production") {
+      const publicUrl = `/uploads/${filename}`
+      return NextResponse.json({
+        success: true,
+        url: publicUrl,
+        message: "Foto berhasil disimpan secara lokal!",
+      })
+    }
+
+    // 3. Resilient Fallback: Base64 Data URL (guaranteed to render anywhere without disk writes)
+    const mimeType = file.type || (ext === ".png" ? "image/png" : ext === ".webp" ? "image/webp" : "image/jpeg")
+    const base64Url = `data:${mimeType};base64,${buffer.toString("base64")}`
     return NextResponse.json({
       success: true,
-      url: publicUrl,
+      url: base64Url,
       message: "Foto berhasil diunggah!",
     })
   } catch (error: any) {

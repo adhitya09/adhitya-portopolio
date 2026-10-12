@@ -74,8 +74,8 @@ export default function Contact() {
             {/* Google Maps Embed */}
             <div className="bg-background border border-text-secondary/20 rounded-2xl sm:rounded-3xl overflow-hidden h-[320px] sm:h-[400px] lg:h-auto min-h-[320px] sm:min-h-[400px] shadow-xl hover:border-text-primary transition-colors duration-500 relative group">
               <div className="absolute top-4 left-4 z-10 bg-background/90 backdrop-blur-md px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl border border-text-secondary/20 shadow-lg pointer-events-none">
-                <p className="text-xs sm:text-sm font-bold text-text-primary">{mapData.title}</p>
-                <p className="text-[10px] sm:text-xs font-medium text-text-secondary">{mapData.subtitle}</p>
+                <p className="text-xs sm:text-sm font-bold text-text-primary">{t(mapData.title)}</p>
+                <p className="text-[10px] sm:text-xs font-medium text-text-secondary">{t(mapData.subtitle)}</p>
               </div>
               <iframe
                 src={mapData.embedUrl}

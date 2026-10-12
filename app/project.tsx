@@ -237,7 +237,7 @@ export default function Project() {
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8 mb-8 sm:mb-10 pb-6 sm:pb-8 border-b border-text-secondary/10">
                     <div>
                       <span className="text-xs font-bold tracking-widest text-text-secondary uppercase block mb-2 sm:mb-3">{t("Created")}</span>
-                      <span className="text-sm font-bold bg-thirdary text-text-primary px-3 py-1.5 rounded-lg border border-text-secondary/10 inline-block">{activeProject.createdAt}</span>
+                      <span className="text-sm font-bold bg-thirdary text-text-primary px-3 py-1.5 rounded-lg border border-text-secondary/10 inline-block">{t(activeProject.createdAt)}</span>
                     </div>
                     <div>
                       <span className="text-xs font-bold tracking-widest text-text-secondary uppercase block mb-2 sm:mb-3">{t("Technologies")}</span>

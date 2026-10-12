@@ -6,7 +6,7 @@ import { useLanguage } from "@/components/LanguageContext"
 
 export default function ATSCVPage() {
   const { data } = usePortfolio()
-  const { language, setLanguage } = useLanguage()
+  const { language, setLanguage, t } = useLanguage()
 
   const hero = data.hero || {}
   const about = data.about || {}
@@ -119,7 +119,7 @@ export default function ATSCVPage() {
               {fullName}
             </h1>
             <p className="text-xs sm:text-[13px] font-bold text-neutral-700 tracking-wide mt-1.5 leading-snug">
-              {titles.join(" • ")}
+              {titles.map((tit: string) => t(tit)).join(" • ")}
             </p>
           </div>
 
@@ -142,7 +142,7 @@ export default function ATSCVPage() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
               </svg>
-              <span className="truncate">{location}</span>
+              <span className="truncate">{t(location)}</span>
             </div>
 
             {/* GitHub */}
@@ -195,7 +195,7 @@ export default function ATSCVPage() {
             {language === "en" ? "PROFILE" : "PROFILE SAYA"}
           </h2>
           <p className="text-xs sm:text-[13px] leading-relaxed text-neutral-800 text-justify">
-            {cvProfile}
+            {t(cvProfile)}
           </p>
         </section>
 
@@ -209,17 +209,17 @@ export default function ATSCVPage() {
               <div key={i} className="flex flex-col print:break-inside-avoid">
                 <div className="flex justify-between items-baseline gap-2">
                   <h3 className="text-xs sm:text-sm font-bold text-neutral-900">
-                    {exp.role}
+                    {t(exp.role)}
                   </h3>
                   <span className="text-xs text-neutral-500 font-medium whitespace-nowrap">
-                    {exp.date}
+                    {t(exp.date)}
                   </span>
                 </div>
                 <p className="text-xs font-semibold text-neutral-700 mt-0.5">
-                  {exp.company}
+                  {t(exp.company)}
                 </p>
                 <p className="text-xs leading-relaxed text-neutral-700 mt-1 text-justify">
-                  {exp.description}
+                  {t(exp.description)}
                 </p>
                 {exp.skills && exp.skills.length > 0 && (
                   <p className="text-[11px] text-neutral-600 mt-1">
@@ -242,18 +242,18 @@ export default function ATSCVPage() {
               <div key={i} className="flex flex-col print:break-inside-avoid">
                 <div className="flex justify-between items-baseline gap-2">
                   <h3 className="text-xs sm:text-sm font-bold text-neutral-900">
-                    {edu.degree}
+                    {t(edu.degree)}
                   </h3>
                   <span className="text-xs text-neutral-500 font-medium whitespace-nowrap">
-                    {edu.date}
+                    {t(edu.date)}
                   </span>
                 </div>
                 <div className="flex justify-between items-baseline text-xs font-semibold text-neutral-700 mt-0.5">
-                  <span>{edu.institution}</span>
+                  <span>{t(edu.institution)}</span>
                   {edu.gpa && <span className="font-bold text-neutral-900">GPA: {edu.gpa}</span>}
                 </div>
                 {edu.description && (
-                  <p className="text-xs text-neutral-600 mt-1 text-justify">{edu.description}</p>
+                  <p className="text-xs text-neutral-600 mt-1 text-justify">{t(edu.description)}</p>
                 )}
               </div>
             ))}
@@ -271,17 +271,17 @@ export default function ATSCVPage() {
                 <div key={i} className="flex flex-col print:break-inside-avoid">
                   <div className="flex justify-between items-baseline gap-2">
                     <h3 className="text-xs sm:text-sm font-bold text-neutral-900">
-                      {org.role}
+                      {t(org.role)}
                     </h3>
                     <span className="text-xs text-neutral-500 font-medium whitespace-nowrap">
-                      {org.date}
+                      {t(org.date)}
                     </span>
                   </div>
                   <p className="text-xs font-semibold text-neutral-700 mt-0.5">
-                    {org.organization}
+                    {t(org.organization)}
                   </p>
                   {org.description && (
-                    <p className="text-xs text-neutral-600 mt-0.5 text-justify">{org.description}</p>
+                    <p className="text-xs text-neutral-600 mt-0.5 text-justify">{t(org.description)}</p>
                   )}
                 </div>
               ))
@@ -289,7 +289,7 @@ export default function ATSCVPage() {
               // Fallback if organizations array is not yet filled
               (education[0]?.activities || []).map((act: string, i: number) => (
                 <div key={i} className="flex justify-between items-baseline text-xs text-neutral-700">
-                  <span className="font-medium">• {act}</span>
+                  <span className="font-medium">• {t(act)}</span>
                 </div>
               ))
             )}
@@ -306,7 +306,7 @@ export default function ATSCVPage() {
               <div key={i} className="flex flex-col print:break-inside-avoid">
                 <div className="flex justify-between items-baseline gap-2">
                   <h3 className="text-xs sm:text-sm font-bold text-neutral-900 flex items-center gap-1.5">
-                    <span>{proj.title}</span>
+                    <span>{t(proj.title)}</span>
                     {proj.liveUrl && (
                       <span className="text-[11px] font-normal text-neutral-500">
                         ({proj.liveUrl.replace(/^https?:\/\//, "")})
@@ -314,7 +314,7 @@ export default function ATSCVPage() {
                     )}
                   </h3>
                   <span className="text-xs text-neutral-500 font-medium whitespace-nowrap">
-                    {proj.createdAt || proj.year || ""}
+                    {t(proj.createdAt || proj.year || "")}
                   </span>
                 </div>
                 {proj.tech && proj.tech.length > 0 && (
@@ -323,12 +323,12 @@ export default function ATSCVPage() {
                   </p>
                 )}
                 <p className="text-xs text-neutral-700 mt-1 leading-relaxed text-justify">
-                  {proj.shortDescription || proj.description}
+                  {t(proj.shortDescription || proj.description)}
                 </p>
                 {proj.features && proj.features.length > 0 && (
                   <p className="text-[11px] text-neutral-600 mt-0.5">
                     <strong className="text-neutral-800 font-semibold">Key Highlights:</strong>{" "}
-                    {proj.features.join(" • ")}
+                    {proj.features.map((f: string) => t(f)).join(" • ")}
                   </p>
                 )}
               </div>
@@ -345,7 +345,7 @@ export default function ATSCVPage() {
             {techCategories.map((cat: any, i: number) => (
               <div key={i} className="flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-4 print:break-inside-avoid">
                 <span className="font-bold sm:w-48 shrink-0 text-neutral-900">
-                  {cat.title}
+                  {t(cat.title)}
                 </span>
                 <span className="text-neutral-700 leading-relaxed">
                   {(cat.technologies || []).map((t: any) => t.name).join(", ")}

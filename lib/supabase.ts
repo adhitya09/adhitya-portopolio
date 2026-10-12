@@ -77,10 +77,11 @@ export async function uploadToSupabaseStorage(
   const supabase = getSupabaseClient()
   if (!supabase) return null
 
-  try {
-    const bucket = "portfolio-assets"
-    const filePath = `uploads/${filename}`
+  const bucket = "portfolio-assets"
+  const filePath = `uploads/${filename}`
 
+  try {
+    // Attempt direct upload
     const { error: uploadError } = await supabase.storage
       .from(bucket)
       .upload(filePath, buffer, {
@@ -88,16 +89,40 @@ export async function uploadToSupabaseStorage(
         upsert: true,
       })
 
-    if (uploadError) {
-      console.error("Supabase storage upload error:", uploadError)
-      return null
+    if (!uploadError) {
+      const { data: publicUrlData } = supabase.storage
+        .from(bucket)
+        .getPublicUrl(filePath)
+      return publicUrlData?.publicUrl || null
     }
 
-    const { data: publicUrlData } = supabase.storage
-      .from(bucket)
-      .getPublicUrl(filePath)
+    // If bucket was missing or failed, attempt to create/verify bucket
+    try {
+      await supabase.storage.createBucket(bucket, {
+        public: true,
+        fileSizeLimit: 20971520, // 20MB
+      })
+    } catch (createErr) {
+      // Bucket might already exist or ignore error
+    }
 
-    return publicUrlData?.publicUrl || null
+    // Retry upload once
+    const { error: retryError } = await supabase.storage
+      .from(bucket)
+      .upload(filePath, buffer, {
+        contentType,
+        upsert: true,
+      })
+
+    if (!retryError) {
+      const { data: publicUrlData } = supabase.storage
+        .from(bucket)
+        .getPublicUrl(filePath)
+      return publicUrlData?.publicUrl || null
+    }
+
+    console.error("Supabase storage upload retry error:", retryError)
+    return null
   } catch (err) {
     console.error("Supabase storage exception:", err)
     return null

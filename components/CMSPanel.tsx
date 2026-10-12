@@ -33,7 +33,8 @@ export default function CMSPanel() {
   >("photo")
   
   const [saving, setSaving] = useState(false)
-  const [uploading, setUploading] = useState(false)
+  const [uploadingTarget, setUploadingTarget] = useState<string | null>(null)
+  const uploading = Boolean(uploadingTarget)
   const [toast, setToast] = useState<{ show: boolean; message: string; type: "success" | "error" }>({
     show: false,
     message: "",
@@ -298,15 +299,75 @@ export default function CMSPanel() {
     }
   }
 
+  // Client-side image compressor: Resizes large camera/phone photos (e.g. DSC photos) to max 1600px WebP, reducing 15MB down to ~250KB before upload
+  const compressImage = async (file: File): Promise<File> => {
+    if (file.type === "image/svg+xml") return file
+    return new Promise((resolve) => {
+      const reader = new FileReader()
+      reader.onload = (event) => {
+        const img = document.createElement("img")
+        img.onload = () => {
+          const maxDim = 1600
+          let w = img.width
+          let h = img.height
+          if (w > maxDim || h > maxDim) {
+            if (w > h) {
+              h = Math.round((h * maxDim) / w)
+              w = maxDim
+            } else {
+              w = Math.round((w * maxDim) / h)
+              h = maxDim
+            }
+          }
+          const canvas = document.createElement("canvas")
+          canvas.width = w
+          canvas.height = h
+          const ctx = canvas.getContext("2d")
+          if (!ctx) {
+            resolve(file)
+            return
+          }
+          ctx.drawImage(img, 0, 0, w, h)
+          canvas.toBlob(
+            (blob) => {
+              if (!blob) {
+                resolve(file)
+                return
+              }
+              const cleanBase = file.name.replace(/\.[^/.]+$/, "").replace(/[^a-zA-Z0-9_-]/g, "_")
+              const cleanName = `${cleanBase}.webp`
+              resolve(new File([blob], cleanName, { type: "image/webp" }))
+            },
+            "image/webp",
+            0.85
+          )
+        }
+        img.onerror = () => resolve(file)
+        img.src = event.target?.result as string
+      }
+      reader.onerror = () => resolve(file)
+      reader.readAsDataURL(file)
+    })
+  }
+
   // Upload Photo / Screenshot handler
-  const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>, targetField: "profile" | "about" | "cvProfile" | "project", projectIndex?: number) => {
+  const handlePhotoUpload = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+    targetField: "profile" | "about" | "cvProfile" | "project",
+    projectIndex?: number
+  ) => {
     const file = e.target.files?.[0]
     if (!file) return
 
-    setUploading(true)
+    const uploadKey = targetField === "project" ? `project-${projectIndex}` : targetField
+    setUploadingTarget(uploadKey)
+
     try {
+      // Compress in browser before sending to bypass Vercel 4.5MB payload limit
+      const optimizedFile = await compressImage(file)
+
       const formData = new FormData()
-      formData.append("file", file)
+      formData.append("file", optimizedFile)
       formData.append("type", targetField)
 
       const res = await fetch("/api/upload", {
@@ -357,7 +418,8 @@ export default function CMSPanel() {
     } catch (err: any) {
       showToast("Terjadi error saat upload: " + err.message, "error")
     } finally {
-      setUploading(false)
+      setUploadingTarget(null)
+      e.target.value = ""
     }
   }
 
@@ -858,11 +920,11 @@ export default function CMSPanel() {
                       type="file"
                       accept="image/*"
                       onChange={(e) => handlePhotoUpload(e, "profile")}
-                      disabled={uploading}
+                      disabled={uploadingTarget === "profile"}
                       className="block w-full text-sm text-text-secondary file:mr-4 file:py-2.5 file:px-5 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-text-primary file:text-background hover:file:opacity-90 file:cursor-pointer cursor-pointer border border-text-secondary/20 rounded-xl p-2 bg-background"
                     />
-                    {uploading && (
-                      <p className="text-xs text-amber-500 font-bold mt-2 animate-pulse">Sedang mengunggah foto...</p>
+                    {uploadingTarget === "profile" && (
+                      <p className="text-xs text-amber-500 font-bold mt-2 animate-pulse">Sedang mengunggah foto Home / Hero...</p>
                     )}
                   </div>
 
@@ -928,10 +990,10 @@ export default function CMSPanel() {
                         type="file"
                         accept="image/*"
                         onChange={(e) => handlePhotoUpload(e, "about")}
-                        disabled={uploading}
+                        disabled={uploadingTarget === "about"}
                         className="block w-full text-sm text-text-secondary file:mr-4 file:py-2.5 file:px-5 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-text-primary file:text-background hover:file:opacity-90 file:cursor-pointer cursor-pointer border border-text-secondary/20 rounded-xl p-2 bg-background"
                       />
-                      {uploading && (
+                      {uploadingTarget === "about" && (
                         <p className="text-xs text-amber-500 font-bold mt-2 animate-pulse">Sedang mengunggah foto About Me...</p>
                       )}
                     </div>
@@ -1023,11 +1085,11 @@ export default function CMSPanel() {
                         type="file"
                         accept="image/*"
                         onChange={(e) => handlePhotoUpload(e, "cvProfile")}
-                        disabled={uploading}
+                        disabled={uploadingTarget === "cvProfile"}
                         className="block w-full text-sm text-text-secondary file:mr-4 file:py-2.5 file:px-5 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-text-primary file:text-background hover:file:opacity-90 file:cursor-pointer cursor-pointer border border-text-secondary/20 rounded-xl p-2 bg-background"
                       />
-                      {uploading && (
-                        <p className="text-xs text-amber-500 font-bold mt-2 animate-pulse">Sedang mengunggah foto CV...</p>
+                      {uploadingTarget === "cvProfile" && (
+                        <p className="text-xs text-amber-500 font-bold mt-2 animate-pulse">Sedang mengunggah foto CV ATS...</p>
                       )}
                     </div>
 
@@ -1547,9 +1609,12 @@ export default function CMSPanel() {
                         type="file"
                         accept="image/*"
                         onChange={(e) => handlePhotoUpload(e, "about")}
-                        disabled={uploading}
+                        disabled={uploadingTarget === "about"}
                         className="block w-full text-xs text-text-secondary file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-text-primary file:text-background hover:file:opacity-90 file:cursor-pointer cursor-pointer border border-text-secondary/20 rounded-xl p-1.5 bg-background"
                       />
+                      {uploadingTarget === "about" && (
+                        <p className="text-xs text-amber-500 font-bold mt-2 animate-pulse">Sedang mengunggah foto About Me...</p>
+                      )}
                     </div>
 
                     <div>
@@ -2686,8 +2751,12 @@ export default function CMSPanel() {
                             type="file"
                             accept="image/*"
                             onChange={(e) => handlePhotoUpload(e, "project", index)}
+                            disabled={uploadingTarget === `project-${index}`}
                             className="block w-full text-xs text-text-secondary file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-[10px] file:font-bold file:bg-text-primary file:text-background cursor-pointer border border-text-secondary/20 rounded-xl p-1 bg-background"
                           />
+                          {uploadingTarget === `project-${index}` && (
+                            <p className="text-xs text-amber-500 font-bold mt-1 animate-pulse">Sedang mengunggah screenshot...</p>
+                          )}
                         </div>
 
                         <div>
