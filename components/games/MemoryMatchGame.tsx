@@ -1,5 +1,6 @@
 "use client"
 import React, { useState, useEffect, useCallback } from "react"
+import Image from "next/image"
 import { sfx } from "./soundEffects"
 
 interface MemoryMatchGameProps {
@@ -7,27 +8,34 @@ interface MemoryMatchGameProps {
   onClose?: () => void
 }
 
-interface CardItem {
-  id: number
-  symbol: string
+interface TechCardItem {
+  key: string
   name: string
+  image: string
+}
+
+interface CardState {
+  id: number
+  key: string
+  name: string
+  image: string
   isFlipped: boolean
   isMatched: boolean
 }
 
-const SYMBOLS = [
-  { symbol: "⚡", name: "Lightning" },
-  { symbol: "🚀", name: "Rocket" },
-  { symbol: "🎮", name: "Gaming" },
-  { symbol: "💻", name: "Code" },
-  { symbol: "💎", name: "Diamond" },
-  { symbol: "🎯", name: "Target" },
-  { symbol: "🔮", name: "Magic" },
-  { symbol: "🎨", name: "Design" },
+const TECH_CARDS: TechCardItem[] = [
+  { key: "react", name: "React", image: "/icons/react.svg" },
+  { key: "typescript", name: "TypeScript", image: "/icons/typescript.svg" },
+  { key: "nextjs", name: "Next.js", image: "/icons/nextjs.svg" },
+  { key: "nodejs", name: "Node.js", image: "/icons/nodejs.svg" },
+  { key: "docker", name: "Docker", image: "/icons/docker.svg" },
+  { key: "git", name: "Git", image: "/icons/git.svg" },
+  { key: "tailwind", name: "Tailwind", image: "/icons/tailwindcss.svg" },
+  { key: "postgresql", name: "PostgreSQL", image: "/icons/postgresql.svg" },
 ]
 
 export default function MemoryMatchGame({ isDark }: MemoryMatchGameProps) {
-  const [cards, setCards] = useState<CardItem[]>([])
+  const [cards, setCards] = useState<CardState[]>([])
   const [flippedIndices, setFlippedIndices] = useState<number[]>([])
   const [moves, setMoves] = useState(0)
   const [matchedPairs, setMatchedPairs] = useState(0)
@@ -42,17 +50,18 @@ export default function MemoryMatchGame({ isDark }: MemoryMatchGameProps) {
   }, [])
 
   const initGame = useCallback(() => {
-    const paired = [...SYMBOLS, ...SYMBOLS]
-    // Shuffle Fisher-Yates
+    const paired = [...TECH_CARDS, ...TECH_CARDS]
+    // Fisher-Yates Shuffle
     for (let i = paired.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1))
       ;[paired[i], paired[j]] = [paired[j], paired[i]]
     }
 
-    const initialCards: CardItem[] = paired.map((item, idx) => ({
+    const initialCards: CardState[] = paired.map((item, idx) => ({
       id: idx,
-      symbol: item.symbol,
+      key: item.key,
       name: item.name,
+      image: item.image,
       isFlipped: false,
       isMatched: false,
     }))
@@ -73,7 +82,7 @@ export default function MemoryMatchGame({ isDark }: MemoryMatchGameProps) {
   // Stopwatch timer
   useEffect(() => {
     let interval: NodeJS.Timeout | null = null
-    if (isTimerActive && matchedPairs < SYMBOLS.length) {
+    if (isTimerActive && matchedPairs < TECH_CARDS.length) {
       interval = setInterval(() => {
         setSeconds((s) => s + 1)
       }, 1000)
@@ -93,7 +102,7 @@ export default function MemoryMatchGame({ isDark }: MemoryMatchGameProps) {
 
     sfx.hit()
 
-    // Flip the clicked card
+    // Flip the clicked card immediately
     const updatedCards = [...cards]
     updatedCards[index].isFlipped = true
     setCards(updatedCards)
@@ -108,7 +117,7 @@ export default function MemoryMatchGame({ isDark }: MemoryMatchGameProps) {
       const firstCard = cards[firstIdx]
       const secondCard = cards[secondIdx]
 
-      if (firstCard.symbol === secondCard.symbol) {
+      if (firstCard.key === secondCard.key) {
         // Matched!
         setTimeout(() => {
           setCards((prev) => {
@@ -119,7 +128,7 @@ export default function MemoryMatchGame({ isDark }: MemoryMatchGameProps) {
           })
           setMatchedPairs((p) => {
             const nextP = p + 1
-            if (nextP === SYMBOLS.length) {
+            if (nextP === TECH_CARDS.length) {
               sfx.win()
               setIsTimerActive(false)
               const curMoves = moves + 1
@@ -134,7 +143,7 @@ export default function MemoryMatchGame({ isDark }: MemoryMatchGameProps) {
           })
           setFlippedIndices([])
           setIsLocked(false)
-        }, 400)
+        }, 350)
       } else {
         // Not matched - flip back
         setTimeout(() => {
@@ -157,10 +166,10 @@ export default function MemoryMatchGame({ isDark }: MemoryMatchGameProps) {
     return `${mins.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}`
   }
 
-  const isCompleted = matchedPairs === SYMBOLS.length
+  const isCompleted = matchedPairs === TECH_CARDS.length
 
   return (
-    <div className="flex flex-col items-center w-full max-w-[460px] select-none">
+    <div className="flex flex-col items-center w-full max-w-[480px] select-none">
       {/* Top Stats Bar */}
       <div className="flex items-center justify-between w-full px-4 py-2.5 mb-3 rounded-xl bg-thirdary/40 border border-text-secondary/15 text-xs font-semibold">
         <div className="flex items-center gap-1.5">
@@ -174,7 +183,7 @@ export default function MemoryMatchGame({ isDark }: MemoryMatchGameProps) {
         <div className="flex items-center gap-1.5">
           <span className="text-text-secondary">Pasangan:</span>
           <span className="font-mono text-sm font-bold text-emerald-500">
-            {matchedPairs} / {SYMBOLS.length}
+            {matchedPairs} / {TECH_CARDS.length}
           </span>
         </div>
       </div>
@@ -182,60 +191,97 @@ export default function MemoryMatchGame({ isDark }: MemoryMatchGameProps) {
       {/* Completion Banner */}
       {isCompleted && (
         <div className="w-full text-center py-2.5 px-4 mb-3 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-500 text-xs sm:text-sm font-bold animate-bounce">
-          🎉 Hebat! Kamu menyelesaikan semua pasangan dalam {moves} langkah ({formatTime(seconds)})!
+          🎉 Luar Biasa! Semua {TECH_CARDS.length} pasangan teknologi ditemukan dalam {moves} langkah ({formatTime(seconds)})!
         </div>
       )}
 
       {/* 4x4 Grid of 3D Cards */}
-      <div className="grid grid-cols-4 gap-2.5 sm:gap-3 w-full aspect-square p-2 rounded-2xl bg-thirdary/20 border border-text-secondary/15">
-        {cards.map((card, idx) => (
-          <div
-            key={card.id}
-            onClick={() => handleCardClick(idx)}
-            className="w-full h-full cursor-pointer perspective-1000"
-          >
-            <div
-              className={`relative w-full h-full duration-500 rounded-xl sm:rounded-2xl shadow-sm transition-transform transform-style-3d ${
-                card.isFlipped || card.isMatched ? "rotate-y-180" : "hover:scale-[1.03]"
-              }`}
-            >
-              {/* Back Face (Hidden Card) */}
-              <div
-                className={`absolute inset-0 backface-hidden flex flex-col items-center justify-center rounded-xl sm:rounded-2xl border transition-colors ${
-                  isDark
-                    ? "bg-thirdary/90 border-text-secondary/25 hover:border-text-primary/60 text-text-secondary"
-                    : "bg-white border-slate-200 hover:border-slate-400 text-slate-500 shadow-sm"
-                }`}
-              >
-                <span className="text-xs font-mono font-bold tracking-widest opacity-60">AH</span>
-                <span className="text-[10px] opacity-40 mt-0.5">✦</span>
-              </div>
+      <div className="grid grid-cols-4 gap-2.5 sm:gap-3 w-full aspect-square p-2 sm:p-2.5 rounded-2xl bg-thirdary/20 border border-text-secondary/15">
+        {cards.map((card, idx) => {
+          const isCardFlipped = card.isFlipped || card.isMatched
 
-              {/* Front Face (Revealed Card) */}
+          return (
+            <div
+              key={card.id}
+              onClick={() => handleCardClick(idx)}
+              className="memory-card-container w-full h-full cursor-pointer group"
+            >
               <div
-                className={`absolute inset-0 backface-hidden rotate-y-180 flex items-center justify-center rounded-xl sm:rounded-2xl border text-2xl sm:text-3xl transition-all ${
-                  card.isMatched
-                    ? "bg-emerald-500/20 border-emerald-500/60 shadow-[0_0_15px_rgba(16,185,129,0.25)] scale-[0.98]"
-                    : isDark
-                    ? "bg-thirdary border-text-primary/40 shadow-md"
-                    : "bg-white border-blue-400 shadow-md"
+                className={`memory-card-inner rounded-xl sm:rounded-2xl shadow-sm ${
+                  isCardFlipped ? "flipped" : "hover:scale-[1.02]"
                 }`}
+                style={{
+                  transform: isCardFlipped ? "rotateY(180deg)" : "rotateY(0deg)",
+                  WebkitTransform: isCardFlipped ? "rotateY(180deg)" : "rotateY(0deg)",
+                }}
               >
-                {card.symbol}
+                {/* Back Face (Shows User's Logo) */}
+                <div
+                  className={`memory-card-face memory-card-back flex flex-col items-center justify-center p-2 rounded-xl sm:rounded-2xl border transition-colors ${
+                    isDark
+                      ? "bg-thirdary/95 border-text-secondary/25 group-hover:border-text-primary/60"
+                      : "bg-white border-slate-200 group-hover:border-slate-400 shadow-sm"
+                  }`}
+                  style={{
+                    backfaceVisibility: "hidden",
+                    WebkitBackfaceVisibility: "hidden",
+                  }}
+                >
+                  <div className="w-9 h-9 sm:w-12 sm:h-12 relative flex items-center justify-center p-1 rounded-xl bg-white/5 border border-white/10 group-hover:scale-105 transition-transform duration-300">
+                    <Image
+                      src="/logo.png"
+                      alt="AH Logo"
+                      width={48}
+                      height={48}
+                      className="w-full h-full object-contain filter drop-shadow-sm"
+                      priority
+                    />
+                  </div>
+                </div>
+
+                {/* Front Face (Revealed: Shows Tech Image + Name) */}
+                <div
+                  className={`memory-card-face memory-card-front flex flex-col items-center justify-center p-2 rounded-xl sm:rounded-2xl border transition-all ${
+                    card.isMatched
+                      ? "bg-emerald-500/20 border-emerald-500/70 shadow-[0_0_15px_rgba(16,185,129,0.3)] scale-[0.98]"
+                      : isDark
+                      ? "bg-thirdary border-text-primary/40 shadow-lg"
+                      : "bg-white border-sky-400 shadow-lg"
+                  }`}
+                  style={{
+                    transform: "rotateY(180deg)",
+                    WebkitTransform: "rotateY(180deg)",
+                    backfaceVisibility: "hidden",
+                    WebkitBackfaceVisibility: "hidden",
+                  }}
+                >
+                  <div className="w-9 h-9 sm:w-11 sm:h-11 relative flex items-center justify-center p-1 rounded-lg bg-black/5 dark:bg-white/5 border border-text-secondary/15">
+                    <Image
+                      src={card.image}
+                      alt={card.name}
+                      width={40}
+                      height={40}
+                      className="w-full h-full object-contain filter drop-shadow-sm"
+                    />
+                  </div>
+                  <span className="text-[10px] sm:text-[11px] font-bold text-text-primary mt-1 tracking-tight text-center truncate max-w-full px-1">
+                    {card.name}
+                  </span>
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          )
+        })}
       </div>
 
       {/* Bottom Hints and Controls */}
       <div className="flex items-center justify-between w-full mt-3 px-1 text-[11px] text-text-secondary">
         <span>
-          {bestMoves ? `🏆 Rekor Terbaik: ${bestMoves} langkah` : "Temukan 8 pasangan kartu secepat mungkin"}
+          {bestMoves ? `🏆 Rekor Terbaik: ${bestMoves} langkah` : "Cocokkan 8 pasang logo teknologi"}
         </span>
         <button
           onClick={initGame}
-          className="px-3 py-1 rounded-lg bg-thirdary hover:bg-button-hover text-text-primary font-medium border border-text-secondary/20 transition-all text-xs cursor-pointer shadow-sm hover:scale-105"
+          className="px-3.5 py-1.5 rounded-lg bg-thirdary hover:bg-button-hover text-text-primary font-bold border border-text-secondary/20 transition-all text-xs cursor-pointer shadow-sm hover:scale-105 active:scale-95"
         >
           Acak Ulang 🔄
         </button>
