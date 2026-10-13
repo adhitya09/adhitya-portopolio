@@ -84,6 +84,7 @@ export default function Header() {
     { name: language === "en" ? "Education" : "Pendidikan", link: "education", id: "education" },
     { name: language === "en" ? "Projects" : "Proyek", link: "projects", id: "projects" },
     { name: language === "en" ? "Contacts" : "Kontak", link: "contacts", id: "contacts" },
+    { name: "Game", link: "game", id: "game" },
   ]
 
   return (

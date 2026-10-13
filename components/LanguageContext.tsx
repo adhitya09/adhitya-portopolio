@@ -52,6 +52,7 @@ const STATIC_MAP: Record<string, string> = {
   "Contacts": "Contact",
   "Kontak": "Contact",
   "Contact": "Contact",
+  "Game": "Game",
 
   // Hero Section
   "Explore Work": "Explore Work",
