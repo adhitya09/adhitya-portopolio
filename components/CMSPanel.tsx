@@ -399,133 +399,98 @@ export default function CMSPanel() {
         process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
         "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFiZ2h2b2NzdXR1YXZidG5na2FuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE0MzI2MzAsImV4cCI6MjEwNzAwODYzMH0.fRheZvYsyp2tsUDSr-fV3cjNfDlWOCowAX43LlWqaGY"
 
-      // 1. Prioritize direct Supabase Storage upload (bypasses Vercel 4.5MB serverless limits, instant and robust)
+      const ext = file.name.split(".").pop()?.toLowerCase() || (isVideo ? "mp4" : "jpg")
+      const cleanBase = file.name.replace(/\.[^/.]+$/, "").replace(/[^a-zA-Z0-9_-]/g, "_") || "media"
+      const filename = `uploads/${Date.now()}_${cleanBase}.${ext}`
+
+      // Standardize clean, valid ASCII MIME type (avoids any browser registry/locale MIME header issues)
+      let cleanMimeType = "image/jpeg"
+      if (isVideo) {
+        if (ext === "mov") cleanMimeType = "video/quicktime"
+        else if (ext === "webm") cleanMimeType = "video/webm"
+        else if (ext === "ogg") cleanMimeType = "video/ogg"
+        else if (ext === "mkv") cleanMimeType = "video/x-matroska"
+        else if (ext === "avi") cleanMimeType = "video/x-msvideo"
+        else cleanMimeType = "video/mp4"
+      } else {
+        if (ext === "png") cleanMimeType = "image/png"
+        else if (ext === "webp") cleanMimeType = "image/webp"
+        else if (ext === "gif") cleanMimeType = "image/gif"
+        else if (ext === "svg") cleanMimeType = "image/svg+xml"
+        else cleanMimeType = "image/jpeg"
+      }
+
+      let publicUrl: string | null = null
+
+      // Strategy 1: Direct Supabase Storage REST API Upload (zero SDK headers bug, streams directly to Supabase CDN)
       if (sbUrl && sbAnon) {
         try {
-          const { createClient } = await import("@supabase/supabase-js")
-          const supabase = createClient(sbUrl, sbAnon)
-          const ext = file.name.split(".").pop()?.toLowerCase() || (isVideo ? "mp4" : "jpg")
-          const cleanBase = file.name.replace(/\.[^/.]+$/, "").replace(/[^a-zA-Z0-9_-]/g, "_")
-          const filename = `uploads/${Date.now()}_${cleanBase}.${ext}`
-          const contentType =
-            file.type ||
-            (isVideo
-              ? ext === "mov"
-                ? "video/quicktime"
-                : ext === "webm"
-                ? "video/webm"
-                : "video/mp4"
-              : "image/jpeg")
+          const directEndpoint = `${sbUrl}/storage/v1/object/portfolio-assets/${filename}`
+          const uploadRes = await fetch(directEndpoint, {
+            method: "POST",
+            headers: {
+              apikey: sbAnon,
+              Authorization: `Bearer ${sbAnon}`,
+              "Content-Type": cleanMimeType,
+              "x-upsert": "true",
+            },
+            body: file,
+          })
 
-          const { error: sbErr } = await supabase.storage
-            .from("portfolio-assets")
-            .upload(filename, file, {
-              contentType,
-              upsert: true,
-            })
-
-          if (!sbErr) {
-            const { data: pubData } = supabase.storage
-              .from("portfolio-assets")
-              .getPublicUrl(filename)
-            const publicUrl = pubData?.publicUrl
-
-            if (publicUrl) {
-              let updatedData: PortfolioData = { ...data }
-              if (targetField === "about") {
-                updatedData = { ...data, about: { ...data.about, profileImage: publicUrl } }
-                setData(updatedData)
-                showToast(
-                  isVideo
-                    ? "Video looping About Me berhasil diunggah! Otomatis tersimpan dan diputar di Live Site."
-                    : "Foto profil About Me berhasil diunggah dan otomatis tersimpan di Live Site!"
-                )
-              } else if (targetField === "profile") {
-                updatedData = { ...data, hero: { ...data.hero, profileImage: publicUrl } }
-                setData(updatedData)
-                showToast(
-                  isVideo
-                    ? "Video Home / Hero berhasil diunggah dan otomatis tersimpan!"
-                    : "Foto profil Home / Hero berhasil diunggah dan otomatis tersimpan!"
-                )
-              } else if (targetField === "cvProfile") {
-                updatedData = { ...data, cvProfileImage: publicUrl } as any
-                setData(updatedData)
-                showToast("Foto profil khusus CV ATS berhasil diunggah!")
-              } else if (targetField === "project" && typeof projectIndex === "number") {
-                const nextProjects = [...data.projects.items]
-                nextProjects[projectIndex] = {
-                  ...nextProjects[projectIndex],
-                  imagePath: publicUrl,
-                }
-                updatedData = {
-                  ...data,
-                  projects: {
-                    ...data.projects,
-                    items: nextProjects,
-                  },
-                }
-                setData(updatedData)
-                showToast("Screenshot proyek berhasil diunggah!")
-              }
-
-              // Auto-persist directly to API & Supabase database
-              try {
-                localStorage.setItem("adhitya_portfolio_custom", JSON.stringify(updatedData))
-                fetch("/api/portfolio", {
-                  method: "POST",
-                  headers: { "Content-Type": "application/json" },
-                  body: JSON.stringify(updatedData),
-                }).catch(() => {})
-              } catch (e) {}
-              return
-            }
+          if (uploadRes.ok) {
+            publicUrl = `${sbUrl}/storage/v1/object/public/portfolio-assets/${filename}`
           } else {
-            console.warn("Client Supabase upload warning:", sbErr)
-            if (isVideo && file.size > 4.5 * 1024 * 1024) {
-              throw new Error(`Gagal upload video (${sbErr.message}). Periksa koneksi internet Anda.`)
-            }
+            const errBody = await uploadRes.text().catch(() => "")
+            console.warn("Direct Supabase REST upload failed with status:", uploadRes.status, errBody)
           }
-        } catch (clientSbErr: any) {
-          console.warn("Direct upload error:", clientSbErr)
-          if (isVideo && file.size > 4.5 * 1024 * 1024) {
-            throw clientSbErr
-          }
+        } catch (directErr) {
+          console.warn("Direct upload exception, trying server upload fallback:", directErr)
         }
       }
 
-      // 2. Fallback to /api/upload
-      const optimizedFile = isVideo ? file : await compressImage(file)
+      // Strategy 2: Serverless Route Fallback (/api/upload)
+      if (!publicUrl) {
+        const optimizedFile = isVideo ? file : await compressImage(file)
+        const formData = new FormData()
+        formData.append("file", optimizedFile)
+        formData.append("type", targetField)
 
-      const formData = new FormData()
-      formData.append("file", optimizedFile)
-      formData.append("type", targetField)
+        const res = await fetch("/api/upload", {
+          method: "POST",
+          body: formData,
+        })
+        const result = await res.json()
 
-      const res = await fetch("/api/upload", {
-        method: "POST",
-        body: formData,
-      })
-      const result = await res.json()
+        if (result.success && result.url) {
+          publicUrl = result.url
+        } else {
+          throw new Error(result.message || "Gagal mengunggah media ke server")
+        }
+      }
 
-      if (result.success && result.url) {
+      if (publicUrl) {
         let updatedData: PortfolioData = { ...data }
         if (targetField === "profile") {
-          updatedData = { ...data, hero: { ...data.hero, profileImage: result.url } }
+          updatedData = { ...data, hero: { ...data.hero, profileImage: publicUrl } }
           setData(updatedData)
           showToast(isVideo ? "Video Home / Hero berhasil diunggah!" : "Foto profil Home / Hero berhasil diunggah!")
         } else if (targetField === "about") {
-          updatedData = { ...data, about: { ...data.about, profileImage: result.url } }
+          updatedData = { ...data, about: { ...data.about, profileImage: publicUrl } }
           setData(updatedData)
-          showToast(isVideo ? "Video looping About Me berhasil diunggah!" : "Foto profil About Me berhasil diunggah!")
+          showToast(
+            isVideo
+              ? "Video looping About Me berhasil diunggah! Otomatis tersimpan dan diputar di Live Site."
+              : "Foto profil About Me berhasil diunggah dan otomatis tersimpan di Live Site!"
+          )
         } else if (targetField === "cvProfile") {
-          updatedData = { ...data, cvProfileImage: result.url } as any
+          updatedData = { ...data, cvProfileImage: publicUrl } as any
           setData(updatedData)
           showToast("Foto profil khusus CV ATS berhasil diunggah!")
         } else if (targetField === "project" && typeof projectIndex === "number") {
           const nextProjects = [...data.projects.items]
           nextProjects[projectIndex] = {
             ...nextProjects[projectIndex],
-            imagePath: result.url,
+            imagePath: publicUrl,
           }
           updatedData = {
             ...data,
@@ -547,10 +512,11 @@ export default function CMSPanel() {
           }).catch(() => {})
         } catch (e) {}
       } else {
-        showToast(result.message || (isVideo ? "Gagal mengunggah video" : "Gagal mengunggah foto"), "error")
+        throw new Error("Gagal mendapatkan URL media setelah upload.")
       }
     } catch (err: any) {
-      showToast("Terjadi error saat upload: " + err.message, "error")
+      console.error("Upload error:", err)
+      showToast("Terjadi error saat upload: " + (err.message || "Gagal mengunggah file"), "error")
     } finally {
       setUploadingTarget(null)
       e.target.value = ""
